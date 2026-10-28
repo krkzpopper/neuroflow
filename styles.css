@@ -1,0 +1,1735 @@
+/* =========================================================
+   Aegis OS - Stylesheet Determinista y Clínico 360°
+   ========================================================= */
+
+:root {
+  --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Colores Principales (Tema Claro) */
+  --bg-app: #f4f6fa;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f8fafc;
+  --border-color: #e2e8f0;
+  --border-focus: #3b82f6;
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --primary-light: #e0f2fe;
+  --primary-dark: #075985;
+
+  --accent: #10b981;
+  --accent-light: #d1fae5;
+
+  /* Macros */
+  --carb-color: #d97706;
+  --carb-bg: #fef3c7;
+  --prot-color: #dc2626;
+  --prot-bg: #fee2e2;
+  --fat-color: #059669;
+  --fat-bg: #d1fae5;
+
+  /* Farmacología & Estados */
+  --med-purple: #7c3aed;
+  --med-purple-bg: #ede9fe;
+  --night-blue: #312e81;
+  --night-blue-bg: #e0e7ff;
+  --warning-amber: #d97706;
+  --warning-bg: #fef3c7;
+  --danger-red: #dc2626;
+  --danger-bg: #fee2e2;
+
+  /* Cubetas de Flujo */
+  --bucket1-color: #2563eb;
+  --bucket2-color: #059669;
+  --bucket3-color: #7c3aed;
+  --bucket4-color: #d97706;
+  --bucket5-color: #db2777;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.1);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+[data-theme="dark"] {
+  --bg-app: #080c14;
+  --bg-card: #0f172a;
+  --bg-card-subtle: #1e293b;
+  --border-color: #334155;
+  --border-focus: #60a5fa;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  --primary: #38bdf8;
+  --primary-hover: #0ea5e9;
+  --primary-light: #082f49;
+  --primary-dark: #7dd3fc;
+
+  --carb-bg: #451a03;
+  --carb-color: #fbbf24;
+  --prot-bg: #450a0a;
+  --prot-color: #f87171;
+  --fat-bg: #064e3b;
+  --fat-color: #34d399;
+
+  --med-purple-bg: #2e1065;
+  --med-purple: #c084fc;
+  --night-blue-bg: #1e1b4b;
+  --night-blue: #a5b4fc;
+  --warning-bg: #451a03;
+  --warning-amber: #fbbf24;
+  --danger-bg: #450a0a;
+  --danger-red: #f87171;
+
+  --bucket1-color: #60a5fa;
+  --bucket2-color: #34d399;
+  --bucket3-color: #c084fc;
+  --bucket4-color: #fbbf24;
+  --bucket5-color: #f472b6;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   Header & Tabs Bar
+   ========================================================= */
+.app-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.logo-icon {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+}
+
+.logo-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.badge-pill {
+  font-size: 0.72rem;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+}
+
+.logo-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.header-stats-strip {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+}
+
+.header-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+}
+
+.stat-k {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.stat-v {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.btn-icon {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Barra de Navegación de 7 Pestañas */
+.main-tabs-bar {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-tab-btn {
+  font-family: var(--font-main);
+  background: transparent;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0.65rem 0.95rem;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all var(--transition-fast);
+}
+
+.nav-tab-btn:hover {
+  color: var(--primary);
+}
+
+.nav-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: var(--bg-card-subtle);
+}
+
+/* =========================================================
+   Layout Principal y Módulos
+   ========================================================= */
+.main-content-layout {
+  max-width: 1440px;
+  width: 100%;
+  margin: 1.25rem auto;
+  padding: 0 1.25rem;
+  flex: 1;
+}
+
+.module-tab-pane {
+  display: none;
+}
+
+.module-tab-pane.active {
+  display: block;
+}
+
+.pane-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.pane-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .pane-grid-2col, .pane-grid-3col {
+    grid-template-columns: 1fr;
+  }
+  .header-stats-strip {
+    display: none;
+  }
+}
+
+/* =========================================================
+   Cards Comunes
+   ========================================================= */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.card-icon {
+  font-size: 1.35rem;
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.card h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.card-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+/* =========================================================
+   Botones y Formularios
+   ========================================================= */
+.btn {
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-sm {
+  font-size: 0.76rem;
+  padding: 0.35rem 0.7rem;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--border-color);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+  background: var(--bg-card-subtle);
+  color: var(--text-primary);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.65rem;
+}
+
+.form-group label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.input-control {
+  font-family: var(--font-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  width: 100%;
+}
+
+.input-control:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.range-slider {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+/* =========================================================
+   Badges y Estados
+   ========================================================= */
+.status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card-subtle);
+  color: var(--text-muted);
+}
+
+.status-badge.connected, .status-badge.success {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.status-badge.connecting, .status-badge.warn {
+  background: var(--warning-bg);
+  color: var(--warning-amber);
+}
+
+.status-badge.disconnected, .status-badge.danger {
+  background: var(--danger-bg);
+  color: var(--danger-red);
+}
+
+/* =========================================================
+   1. SUEÑO Y CRONOBIOLOGÍA
+   ========================================================= */
+.protocol-chronology-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chrono-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  gap: 0.75rem;
+}
+
+.chrono-time {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--night-blue);
+  min-width: 55px;
+}
+
+.chrono-desc {
+  flex: 1;
+}
+
+.chrono-desc strong {
+  font-size: 0.88rem;
+  display: block;
+}
+
+.chrono-desc p {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.decision-tree-box {
+  background: var(--bg-card-subtle);
+  border-left: 4px solid var(--primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.mini-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+}
+
+.mini-table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-card-subtle);
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================================
+   2. CONTABILIDAD (5 CUBETAS)
+   ========================================================= */
+.income-deposit-bar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.buckets-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 1200px) {
+  .buckets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.bucket-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-top: 4px solid #cbd5e1;
+}
+
+.bucket-card.bucket-1 { border-top-color: var(--bucket1-color); }
+.bucket-card.bucket-2 { border-top-color: var(--bucket2-color); }
+.bucket-card.bucket-3 { border-top-color: var(--bucket3-color); }
+.bucket-card.bucket-4 { border-top-color: var(--bucket4-color); }
+.bucket-card.bucket-5 { border-top-color: var(--bucket5-color); }
+
+.bucket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.bucket-pct {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.bucket-balance {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0.45rem 0;
+  color: var(--text-primary);
+}
+
+.bucket-sub-rule small {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+  display: block;
+}
+
+.daily-cash {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--bucket1-color);
+  font-size: 0.95rem;
+  margin: 0.15rem 0;
+}
+
+.projects-list, .rewards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.project-item-card, .reward-item-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+/* =========================================================
+   3. NUTRICIÓN & DESPENSA OTZOLOTEPEC
+   ========================================================= */
+.scale-card {
+  background: linear-gradient(180deg, var(--bg-card), var(--bg-card-subtle));
+  border-top: 3px solid var(--primary);
+}
+
+.scale-meta-badges {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+}
+
+.scale-mini-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+}
+
+.scale-display-box {
+  background: var(--bg-card-subtle);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.scale-display-box.measuring {
+  border-color: var(--warning-amber);
+  border-style: solid;
+}
+
+.scale-display-box.stabilized {
+  border-color: var(--accent);
+  border-style: solid;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.scale-val-wrapper {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.scale-weight-number {
+  font-family: var(--font-mono);
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.scale-unit {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.tdee-summary-card {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+}
+
+.tdee-metric {
+  text-align: center;
+}
+
+.tdee-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  display: block;
+}
+
+.tdee-val {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tdee-val.big {
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+
+.tdee-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border-color);
+}
+
+.macro-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.macro-chip {
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.carb-chip { background: var(--carb-bg); color: var(--carb-color); }
+.prot-chip { background: var(--prot-bg); color: var(--prot-color); }
+.fat-chip { background: var(--fat-bg); color: var(--fat-color); }
+
+.macro-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.macro-grams {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.comparator-grid {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.comp-col {
+  flex: 1;
+}
+
+.comp-vs {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.comparison-result-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  font-size: 0.82rem;
+}
+
+.pantry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.65rem;
+}
+
+.pantry-card-item {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem;
+  font-size: 0.78rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* =========================================================
+   4. MEDICACIÓN & FARMACOCINÉTICA
+   ========================================================= */
+.med-blocks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.med-block-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+}
+
+.med-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.med-time-tag {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  background: var(--med-purple-bg);
+  color: var(--med-purple);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.life-bar-wrapper {
+  background: var(--border-color);
+  height: 16px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: 0.45rem;
+}
+
+.life-bar-fill {
+  background: linear-gradient(90deg, #10b981, #0284c7, #8b5cf6);
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.pk-drug-item {
+  margin-bottom: 0.65rem;
+}
+
+.pk-drug-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+.pk-mini-bar {
+  background: var(--border-color);
+  height: 8px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.pk-mini-fill {
+  background: var(--primary);
+  height: 100%;
+}
+
+/* =========================================================
+   5. EJERCICIO, RODILLA & BDNF
+   ========================================================= */
+.rehab-info-box {
+  background: var(--primary-light);
+  border-left: 3px solid var(--primary);
+  padding: 0.65rem;
+  font-size: 0.78rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-timer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+}
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.locked-feature-box {
+  background: var(--bg-card-subtle);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.lock-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.unlock-criteria-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.criterion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  background: var(--bg-card);
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+/* =========================================================
+   6. TRABAJO, POMODORO & 7 PROYECTOS
+   ========================================================= */
+.pomodoro-timer-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1.25rem 0;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.pomodoro-timer-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 5px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card-subtle);
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.15);
+}
+
+.pomodoro-time-number {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pomodoro-mode-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-top: 0.35rem;
+}
+
+.pomodoro-progress-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.pomo-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--border-color);
+}
+
+.pomo-dot.done {
+  background: var(--accent);
+}
+
+.pomo-dot.active {
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+}
+
+.rest-audit-card {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-amber);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.seven-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.project-tile {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.proj-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.proj-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+}
+
+.proj-desc {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.proj-stat {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+/* =========================================================
+   7. ESTUDIO (4 HORAS / 6 RAMAS)
+   ========================================================= */
+.study-timer-box {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.study-time-val {
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.branches-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .branches-matrix {
+    grid-template-columns: 1fr;
+  }
+}
+
+.branch-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+}
+
+.branch-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.branch-hours {
+  font-family: var(--font-mono);
+  color: var(--primary);
+}
+
+/* =========================================================
+   Modales & Emergencia
+   ========================================================= */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-backdrop.open {
+  display: flex !important;
+}
+
+.emergency-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 200;
+  display: none !important;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.emergency-modal-backdrop.open {
+  display: flex !important;
+}
+
+.modal-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  max-width: 520px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-lg {
+  max-width: 750px;
+}
+
+.modal-header {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.modal-body {
+  padding: 1.25rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-card-subtle);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Modal de Emergencia Específico */
+.emergency-box {
+  background: var(--bg-card);
+  border: 3px solid var(--danger-red);
+  border-radius: var(--radius-lg);
+  max-width: 650px;
+  width: 100%;
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.4);
+  overflow: hidden;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.emergency-header {
+  background: var(--danger-red);
+  color: #fff;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.emergency-header h2 {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.emergency-body {
+  padding: 1.25rem;
+}
+
+.emergency-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 1rem 0;
+}
+
+.step-card {
+  display: flex;
+  gap: 0.75rem;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem;
+  font-size: 0.82rem;
+}
+
+.step-num {
+  font-family: var(--font-mono);
+  background: var(--danger-red);
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.breathing-guide {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-top: 0.35rem;
+  animation: pulse 4s infinite;
+}
+
+.emergency-footer {
+  padding: 0.85rem 1.25rem;
+  background: var(--bg-card-subtle);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* POS Terminal */
+.pos-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.pos-buttons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.pos-ticket-items {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  min-height: 120px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+}
+
+.pos-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+/* Utilidades */
+.mt-1 { margin-top: 0.35rem; }
+.mt-2 { margin-top: 0.65rem; }
+.mt-3 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.35rem; }
+.mb-2 { margin-bottom: 0.65rem; }
+.mb-3 { margin-bottom: 1rem; }
+.text-center { text-align: center; }
+.font-bold { font-weight: 700; }
+.text-sm { font-size: 0.8rem; }
+.text-xs { font-size: 0.72rem; }
+.text-success { color: var(--accent); }
+.text-primary { color: var(--primary); }
+.text-muted { color: var(--text-muted); }
+.text-danger { color: var(--danger-red); }
+.text-right { text-align: right; }
+
+/* ========================================================================== */
+/* MÓDULO 1: CRONÓMETRO DE SUEÑO */
+/* ========================================================================== */
+.sleep-stopwatch-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  text-align: center;
+  margin-top: 0.75rem;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.stopwatch-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.stopwatch-digits {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--primary);
+  text-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+}
+
+.stopwatch-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: var(--border-color);
+  color: var(--text-muted);
+}
+
+.stopwatch-status-pill.sleeping {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  animation: pulse 2s infinite;
+}
+
+.stopwatch-sub-info {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  min-height: 1.2rem;
+}
+
+/* ========================================================================== */
+/* MÓDULO 2: LIBRO MAYOR (7 DÍAS) & GESTIÓN DE PROYECTOS/PREMIOS */
+/* ========================================================================== */
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.ledger-table th {
+  background: var(--bg-card-subtle);
+  color: var(--text-muted);
+  font-weight: 700;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 2px solid var(--border-color);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.ledger-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.ledger-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.badge-income {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--accent);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.badge-expense {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger-red);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.ledger-summary-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Proyectos Desglosados & Editables */
+.project-clickable-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.project-clickable-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.comp-item-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 40px;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+/* Premios Auditados */
+.reward-criteria-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 0.74rem;
+}
+
+.crit-pill {
+  flex: 1 1 140px;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.crit-pill.ok {
+  border-color: var(--accent);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.crit-pill.fail {
+  border-color: var(--danger-red);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* ========================================================================== */
+/* MÓDULO 3: LISTA DOMINICAL OTZOLOTEPEC & NUTRICIÓN */
+/* ========================================================================== */
+.sunday-market-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(37, 99, 235, 0.05));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+}
+
+.sunday-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0;
+  border-bottom: 1px dashed var(--border-color);
+  font-size: 0.8rem;
+}
+
+.sunday-item-row:last-child {
+  border-bottom: none;
+}
+
+.market-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.market-tag.cholesterol { background: rgba(16, 185, 129, 0.15); color: var(--accent); }
+.market-tag.muscle { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+.market-tag.energy { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+
+/* ========================================================================== */
+/* MÓDULO 4: MEDICACIÓN CRUD */
+/* ========================================================================== */
+.med-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.med-item-row:last-child {
+  border-bottom: none;
+}
+
+.med-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.med-action-btn:hover {
+  color: var(--primary);
+  background: var(--bg-card-subtle);
+}
+
+.med-action-btn.delete:hover {
+  color: var(--danger-red);
+}
+
+/* ========================================================================== */
+/* FECHA ACTUAL & MÓDULO DE CRAVING DE ALCOHOL/TABACO & ABSTINENCIA */
+/* ========================================================================== */
+.header-date-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: var(--font-mono);
+}
+
+.header-stat-item.header-date-chip {
+  background: rgba(37, 99, 235, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+}
+
+.craving-abstinence-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.abstinence-hero-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(37, 99, 235, 0.08));
+  border: 2px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+}
+
+.abstinence-count-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.abstinence-count-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.abstinence-count-number {
+  font-family: var(--font-mono);
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1.1;
+  text-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+}
+
+.abstinence-action-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 320px;
+}
+
+@media (max-width: 768px) {
+  .abstinence-hero-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .abstinence-action-box {
+    align-items: flex-start;
+    width: 100%;
+    max-width: none;
+  }
+  .abstinence-action-box button {
+    width: 100%;
+  }
+}
+
+.craving-input-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+
+.craving-slider-group {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+}
+
+.craving-pill-val {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  background: var(--primary-light);
+  color: var(--primary);
+  transition: all 0.2s ease;
+}
+
+.craving-pill-val.level-1 { background: rgba(16, 185, 129, 0.15); color: var(--accent); }
+.craving-pill-val.level-2 { background: rgba(16, 185, 129, 0.2); color: var(--accent); }
+.craving-pill-val.level-3 { background: rgba(245, 158, 11, 0.2); color: #d97706; }
+.craving-pill-val.level-4 { background: rgba(239, 68, 68, 0.2); color: var(--danger-red); font-weight: 800; }
+.craving-pill-val.level-5 { background: rgba(239, 68, 68, 0.35); color: #b91c1c; font-weight: 900; animation: pulse 1.5s infinite; }
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  font-family: var(--font-mono);
+}
+
+.craving-history-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+}
+
+.craving-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.82rem;
+}
+
+.craving-history-item:last-child {
+  border-bottom: none;
+}
+
+/* POS Don Pale Analytics & Virtual Token */
+.pos-analytics-card {
+  margin-top: 1rem;
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  font-size: 0.8rem;
+}
+
+.token-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+

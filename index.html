@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis OS | Panel de Auditoría, Salud & Alto Rendimiento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Alerta de Emergencia Anti-Recaída (Modal Bloqueante Condicional) -->
+  <div id="relapseEmergencyModal" class="emergency-modal-backdrop" style="display: none;">
+    <div class="emergency-box">
+      <div class="emergency-header">
+        <span class="emergency-icon">🚨</span>
+        <h2>PROTOCOLO DETERMINISTA DE EMERGENCIA: PREVENCIÓN DE RECAÍDA</h2>
+      </div>
+      <div class="emergency-body">
+        <p class="emergency-alert-msg">
+          Se ha detectado una señal crítica en tus marcadores psicofisiológicos (Deseo de Alcohol o Ansiedad elevada).
+          <strong>El trabajo, finanzas y actividades se suspenden temporalmente para salvaguardar tu sobriedad y salud cerebral.</strong>
+        </p>
+
+        <div class="emergency-steps">
+          <div class="step-card">
+            <span class="step-num">1</span>
+            <div>
+              <strong>Choque Vagal con Agua Helada:</strong>
+              <p>Bebe de inmediato 500 ml de agua helada o lava tu rostro con agua fría para frenar la activación simpática.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <span class="step-num">2</span>
+            <div>
+              <strong>Respiración Fisiológica 4-7-8 (4 min):</strong>
+              <p>Inhala por la nariz 4s, sostén 7s y exhala suave por la boca 8s. Estabiliza el cortisol de inmediato.</p>
+              <button id="btnStartBreathing" class="btn btn-primary btn-sm mt-1">Iniciar Guía de Respiración (4 min)</button>
+              <div id="breathingGuideText" class="breathing-guide" style="display: none;">Inhala (4s)...</div>
+            </div>
+          </div>
+          <div class="step-card">
+            <span class="step-num">3</span>
+            <div>
+              <strong>Normalización de Glucosa Cerebral (HALT):</strong>
+              <p>Consume de inmediato manzana con canela o una infusión tibia con una cucharadita de semillas. La hipoglucemia dispara el craving.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <span class="step-num">4</span>
+            <div>
+              <strong>Contacto de Apoyo o Red de Contención:</strong>
+              <p>Comunícate de inmediato con tu terapeuta, padrino o persona de confianza antes de tomar cualquier decisión.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="emergency-reason-box">
+          <label for="relapseReasonNotes"><strong>Auditoría de Causa Disparadora (HALT / Entorno):</strong></label>
+          <textarea id="relapseReasonNotes" class="input-control" rows="2" placeholder="¿Qué ocurrió? (Hambre, cansancio, conflicto, frustración en código o granja...)"></textarea>
+        </div>
+      </div>
+      <div class="emergency-footer">
+        <button id="btnDeescalateRelapse" class="btn btn-secondary">He completado el protocolo y mi nivel de riesgo es seguro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Superior -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="logo-title">Aegis OS <span class="badge-pill">Auditoría 360°</span></h1>
+          <p class="logo-subtitle">Meta: $500,000/mes libres • BDNF & Rodilla • Cero Alcohol • Lógica Determinista</p>
+        </div>
+      </div>
+
+      <!-- Métricas Clave de la Barra Superior -->
+      <div class="header-stats-strip">
+        <div class="header-stat-item header-date-chip">
+          <span class="stat-k">📅 Fecha:</span>
+          <span class="stat-v" id="headerCurrentDateDisplay">15 Oct 2026</span>
+        </div>
+        <div class="header-stat-item">
+          <span class="stat-k">🛡️ Abstinencia:</span>
+          <span class="stat-v text-success" id="statSobrietyDays">Día 1</span>
+        </div>
+        <div class="header-stat-item">
+          <span class="stat-k">⚖️ Peso:</span>
+          <span class="stat-v" id="headerWeightVal">--.- kg</span>
+        </div>
+        <div class="header-stat-item">
+          <span class="stat-k">🌙 Sueño:</span>
+          <span class="stat-v" id="headerSleepVal">-- h</span>
+        </div>
+        <div class="header-stat-item">
+          <span class="stat-k">💰 Ingreso Mes:</span>
+          <span class="stat-v text-primary" id="headerIncomeVal">$0 / $500k</span>
+        </div>
+        <div class="header-stat-item">
+          <span class="stat-k">⏱️ Pomodoro:</span>
+          <span class="stat-v" id="headerPomodoroVal">0/8</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnHeaderNewDay" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; border-color: var(--accent); color: var(--text-color);" title="Cerrar registros de hoy y reiniciar checklists para el nuevo día">
+          🔄 Cerrar Día / Nuevo Día
+        </button>
+        <button id="themeToggleBtn" class="btn-icon" title="Cambiar tema claro/oscuro">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navegación por los 7 Apartados -->
+    <nav class="main-tabs-bar">
+      <button class="nav-tab-btn active" data-tab="tab-sleep">
+        <span class="tab-icon">🌙</span> 1. Sueño & Cronobiología
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-accounting">
+        <span class="tab-icon">💰</span> 2. Contabilidad (5 Cubetas)
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-nutrition">
+        <span class="tab-icon">🥗</span> 3. Nutrición & Otzolotepec
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-meds">
+        <span class="tab-icon">💊</span> 4. Medicación (Barra de Vida)
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-exercise">
+        <span class="tab-icon">🏃</span> 5. Ejercicio & BDNF (Rodilla)
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-work">
+        <span class="tab-icon">💼</span> 6. Trabajo & Pomodoro (7 Proyectos)
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-study">
+        <span class="tab-icon">📚</span> 7. Estudio (4h / 6 Ramas)
+      </button>
+    </nav>
+  </header>
+
+  <!-- Contenedor Principal de Vistas -->
+  <main class="main-content-layout">
+
+    <!-- ================================================================= -->
+    <!-- 1. SUEÑO Y CRONOBIOLOGÍA -->
+    <!-- ================================================================= -->
+    <section id="tab-sleep" class="module-tab-pane active">
+      <div class="pane-grid-2col">
+        
+        <!-- Panel de Protocolo y Registro -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">🌙</span>
+              <div>
+                <h2>Protocolo de Sueño y Cronobiología</h2>
+                <span class="card-sub">Meta estricta: 9 Horas de sueño reparador</span>
+              </div>
+            </div>
+            <span class="status-badge" id="sleepComplianceBadge">Pendiente</span>
+          </div>
+
+          <div class="protocol-chronology-box">
+            <div class="chrono-item">
+              <span class="chrono-time">20:00</span>
+              <div class="chrono-desc">
+                <strong>Toma de Medicación Nocturna</strong>
+                <p>Valproato + Risperidona + Clonazepam con medio vaso de agua tibia.</p>
+              </div>
+              <input type="checkbox" id="chkSleepMedNight" class="task-checkbox">
+            </div>
+            <div class="chrono-item">
+              <span class="chrono-time">20:30</span>
+              <div class="chrono-desc">
+                <strong>Desconexión de Pantallas y a la Cama</strong>
+                <p>Cero luz azul, ambiente fresco (18-20°C), habitación en penumbra absoluta.</p>
+              </div>
+              <input type="checkbox" id="chkSleepScreensOff" class="task-checkbox">
+            </div>
+            <div class="chrono-item">
+              <span class="chrono-time">21:00</span>
+              <div class="chrono-desc">
+                <strong>Inicio de Sueño</strong>
+                <p>Fase de latencia e inicio de inducción GABAérgica del sueño profundo.</p>
+              </div>
+            </div>
+            <div class="chrono-item">
+              <span class="chrono-time">06:00</span>
+              <div class="chrono-desc">
+                <strong>Despertar Matutino (9h Totales)</strong>
+                <p>Exposición inmediata a luz solar natural + 1 vaso grande de agua (7:00).</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 form-box">
+            <h3>Cronómetro de Sueño & Auditoría Matutina</h3>
+            <p class="text-xs text-muted mb-2">Inicia el cronómetro al irte a la cama (20:30 - 21:00) y apágalo al despertar (06:00). Registra automáticamente las horas exactas de descanso.</p>
+            
+            <div class="sleep-stopwatch-card">
+              <div class="stopwatch-display">
+                <div class="stopwatch-digits" id="sleepStopwatchDisplay">00:00:00</div>
+                <div class="stopwatch-status-pill" id="sleepStopwatchStatus">EN REPOSO / DESPIERTO</div>
+              </div>
+              <div class="stopwatch-sub-info" id="sleepStopwatchSub">
+                Pulsa el botón al acostarte para iniciar el cronómetro continuo de sueño.
+              </div>
+              <div class="stopwatch-actions mt-2">
+                <button id="btnStartSleepStopwatch" class="btn btn-primary btn-block">
+                  🌙 Iniciar Sueño (A la Cama)
+                </button>
+                <button id="btnStopSleepStopwatch" class="btn btn-secondary btn-block" style="display: none;">
+                  ☀️ Despertar y Apagar Cronómetro
+                </button>
+              </div>
+            </div>
+
+            <div class="sleep-record-details mt-3" id="sleepRecordDetailsBox">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="inputSleepHours">Horas registradas (Cronómetro / Manual):</label>
+                  <input type="number" id="inputSleepHours" class="input-control" step="0.1" min="0" max="18" value="9.0">
+                </div>
+                <div class="form-group">
+                  <label for="selectSleepQuality">Calidad percibida:</label>
+                  <select id="selectSleepQuality" class="input-control">
+                    <option value="5">5/5 - Reparador, energía óptima</option>
+                    <option value="4" selected>4/5 - Bueno, descanso adecuado</option>
+                    <option value="3">3/5 - Regular, algunos despertares</option>
+                    <option value="2">2/5 - Fragmentado, cansancio matutino</option>
+                    <option value="1">1/5 - Insomnio severo / fatiga</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group mt-2">
+                <label class="check-label">
+                  <input type="checkbox" id="chkSleepProtocolAccomplished">
+                  <span>Certifico que cumplí el protocolo nocturno (a la cama 20:30, despertar 06:00)</span>
+                </label>
+              </div>
+              <button id="btnSaveSleepLog" class="btn btn-outline btn-block mt-2">Guardar / Actualizar Registro en Historial</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel de Análisis Determinista de Sueño -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">🧠</span>
+              <div>
+                <h2>Impacto en Neuroquímica & Craving</h2>
+                <span class="card-sub">Árbol de Decisión Determinista</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="decision-tree-box" id="sleepDiagnosticBox">
+            <!-- Diagnóstico generado determinísticamente -->
+          </div>
+
+          <div class="history-list-box mt-3">
+            <h3>Historial de los últimos 7 días</h3>
+            <div id="sleepHistoryList" class="mini-table">
+              <!-- Renderizado dinámico -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Contenedor: Registro de Craving (Alcohol & Tabaco) & Contador de Abstinencia -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">🛡️</span>
+            <div>
+              <h2>Registro de Craving de Alcohol, Tabaco & Contador de Abstinencia</h2>
+              <span class="card-sub">Monitoreo con momento exacto • Árbol determinista • Botón de reincidencia</span>
+            </div>
+          </div>
+          <span class="status-badge success" id="abstinenceStatusBadge">Abstinencia Activa</span>
+        </div>
+
+        <div class="craving-abstinence-dashboard">
+          <!-- Contador de Abstinencia y Botón de Reincidencia -->
+          <div class="abstinence-hero-bar">
+            <div class="abstinence-count-display">
+              <span class="abstinence-count-label">Días Continuos de Abstinencia (Alcohol & Tabaco):</span>
+              <div class="abstinence-count-number" id="abstinenceHeroDaysDisplay">6 días</div>
+              <span class="text-xs text-muted" id="abstinenceStartDateDisplay">Racha iniciada: 14 de Octubre de 2026</span>
+              <div class="abstinence-date-picker-row mt-2" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <label for="inputAbstinenceStartDate" class="text-xs" style="color: var(--text-muted); font-weight: 600;">Fecha de inicio de racha:</label>
+                <input type="date" id="inputAbstinenceStartDate" class="input-control" style="width: auto; padding: 0.2rem 0.5rem; font-size: 0.8rem; height: 30px;" value="2026-10-14">
+                <button id="btnSaveAbstinenceStartDate" class="btn btn-sm btn-outline" style="padding: 0.2rem 0.6rem; font-size: 0.8rem; height: 30px;" title="Ajustar fecha de inicio y recalcular racha">
+                  🔄 Ajustar Fecha
+                </button>
+              </div>
+            </div>
+            <div class="abstinence-action-box">
+              <button id="btnRelapseReset" class="btn btn-outline text-danger" title="Reinicia el contador a 0 si ocurrió una ingesta o consumo">
+                ⚠️ Registrar Reincidencia (Reiniciar a Día 0)
+              </button>
+              <p class="text-xs text-muted mt-1 text-center">Si se vuelve a tomar o fumar, pulsa aquí para reiniciar el contador a 0 y registrar el evento.</p>
+            </div>
+          </div>
+
+          <!-- Formulario de Registro de Craving con Sliders 1 a 5 -->
+          <div class="craving-input-card">
+            <h3 class="mb-2">Registro Cuantitativo de Craving</h3>
+            <div class="form-grid">
+              <!-- Slider Craving de Alcohol -->
+              <div class="form-group craving-slider-group">
+                <div class="d-flex justify-between align-center mb-1">
+                  <label for="sliderAlcoholCraving"><strong>🍺 Craving de Tomar Alcohol (1 al 5):</strong></label>
+                  <span class="craving-pill-val level-1" id="valAlcoholCraving">1 - Ninguno</span>
+                </div>
+                <input type="range" id="sliderAlcoholCraving" min="1" max="5" value="1" class="range-slider">
+                <div class="range-ticks">
+                  <span>1 (Nulo)</span><span>2 (Leve)</span><span>3 (Moderado)</span><span>4 (Fuerte)</span><span>5 (Crítico)</span>
+                </div>
+              </div>
+
+              <!-- Slider Craving de Fumar -->
+              <div class="form-group craving-slider-group">
+                <div class="d-flex justify-between align-center mb-1">
+                  <label for="sliderSmokeCraving"><strong>🚬 Craving de Fumar (1 al 5):</strong></label>
+                  <span class="craving-pill-val level-1" id="valSmokeCraving">1 - Ninguno</span>
+                </div>
+                <input type="range" id="sliderSmokeCraving" min="1" max="5" value="1" class="range-slider">
+                <div class="range-ticks">
+                  <span>1 (Nulo)</span><span>2 (Leve)</span><span>3 (Moderado)</span><span>4 (Fuerte)</span><span>5 (Crítico)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group mt-2">
+              <label for="inputCravingContext">Detonante / Contexto Fisiológico o Psicológico (Opcional):</label>
+              <input type="text" id="inputCravingContext" class="input-control" placeholder="Ej. Cansancio post-trabajo, hambre HALT, sobreestimulación, estrés laboral...">
+            </div>
+
+            <div class="d-flex justify-between align-center mt-2" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+              <span class="text-xs text-muted">Se estampará la <strong>fecha y momento exacto</strong> del registro para auditoría continua.</span>
+              <button id="btnLogCravingEpisode" class="btn btn-primary">
+                ⏱️ Registrar Momento Exacto del Registro
+              </button>
+            </div>
+
+            <!-- Intervención Inmediata si Craving >= 3 -->
+            <div id="cravingInterventionBox" class="mt-2" style="display: none;"></div>
+          </div>
+
+          <!-- Historial de Episodios de Craving Registrados -->
+          <div class="craving-history-box">
+            <h4>Historial de Registros de Craving & Auditoría</h4>
+            <div id="cravingHistoryTable" class="mini-table mt-1">
+              <!-- Renderizado dinámico -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial y Persistencia Diaria (Desde el 15 de Octubre de 2026) -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">📅</span>
+            <div>
+              <h2>Registro Histórico Diario (Desde el 15 de Octubre de 2026)</h2>
+              <span class="card-sub">Auditoría determinista de cada día • Reinicio automático de protocolos cada medianoche</span>
+            </div>
+          </div>
+          <button id="btnManualDayRollover" class="btn btn-secondary btn-sm" title="Cerrar el día actual, archivar métricas y reiniciar checklists">
+            🔄 Cerrar Día & Iniciar Nuevo Día
+          </button>
+        </div>
+        <div class="table-responsive mt-2">
+          <table class="ledger-table" id="dailyRecordsTable">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Racha Abstinencia</th>
+                <th>Peso Báscula</th>
+                <th>Sueño</th>
+                <th>Protocolo 20:30/06:00</th>
+                <th>Comidas</th>
+                <th>Medicación</th>
+                <th>Pomodoros</th>
+                <th>Diagnóstico / Notas</th>
+              </tr>
+            </thead>
+            <tbody id="dailyRecordsTableBody">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 2. CONTABILIDAD (5 CUBETAS DE FLUJO) -->
+    <!-- ================================================================= -->
+    <section id="tab-accounting" class="module-tab-pane">
+      
+      <!-- Entrada de Ingresos y Reparto 40/20/20/10/10 -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">💵</span>
+            <div>
+              <h2>Ingreso de Flujo & Partición Automática de 5 Cubetas</h2>
+              <span class="card-sub">Meta Mensual Libre: $500,000 MXN</span>
+            </div>
+          </div>
+        </div>
+        <div class="income-deposit-bar">
+          <div class="form-group" style="flex: 1.2;">
+            <label for="inputNewIncome">Registrar Nuevo Ingreso Recibido ($ MXN):</label>
+            <input type="number" id="inputNewIncome" class="input-control" placeholder="Ej. 15000" min="1">
+          </div>
+          <div class="form-group" style="flex: 1.2;">
+            <label for="inputIncomeSource">Fuente / Origen:</label>
+            <input type="text" id="inputIncomeSource" class="input-control" placeholder="Ej. Tienda Don Pale, Programación, Asesoría...">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="inputIncomeCategory">Categoría:</label>
+            <select id="inputIncomeCategory" class="input-control">
+              <option value="Ingeniería" selected>Ingeniería</option>
+              <option value="Pedagogía">Pedagogía</option>
+              <option value="Servicio técnico">Servicio técnico</option>
+              <option value="Agrícola">Agrícola</option>
+            </select>
+          </div>
+          <button id="btnDistributeIncome" class="btn btn-primary" style="align-self: flex-end;">Partir en 5 Cubetas</button>
+          <button id="btnResetBucketsZero" class="btn btn-outline" style="align-self: flex-end;" title="Restablecer contabilidad a $0.00 para iniciar auditoría limpia">Reiniciar a $0</button>
+        </div>
+
+        <!-- 5 Cubetas Visuales -->
+        <div class="buckets-grid mt-3">
+          <!-- Cubeta 1: 40% -->
+          <div class="bucket-card bucket-1">
+            <div class="bucket-header">
+              <span class="bucket-pct">40%</span>
+              <span class="bucket-name">Gastos Operativos Diarios</span>
+            </div>
+            <div class="bucket-balance" id="bucket1Balance">$0.00</div>
+            <div class="bucket-sub-rule">
+              <strong>Presupuesto Diario en Efectivo:</strong>
+              <div class="daily-cash" id="bucket1DailyCash">$0.00 / día</div>
+              <small>Estrictamente comida del día y pasaje (dividido entre 7). Prohibido tomar de otras cubetas.</small>
+            </div>
+          </div>
+
+          <!-- Cubeta 2: 20% -->
+          <div class="bucket-card bucket-2">
+            <div class="bucket-header">
+              <span class="bucket-pct">20%</span>
+              <span class="bucket-name">Mantenimiento Semanal</span>
+            </div>
+            <div class="bucket-balance" id="bucket2Balance">$0.00</div>
+            <div class="bucket-sub-rule">
+              <small>Despensa por volumen de Otzolotepec e insumos menores para la casa.</small>
+            </div>
+          </div>
+
+          <!-- Cubeta 3: 20% -->
+          <div class="bucket-card bucket-3">
+            <div class="bucket-header">
+              <span class="bucket-pct">20%</span>
+              <span class="bucket-name">Costos Mensuales</span>
+            </div>
+            <div class="bucket-balance" id="bucket3Balance">$0.00</div>
+            <div class="bucket-sub-rule">
+              <small>Fondo intocable: Medicamentos, servicios fijos, reposición de ropa. Se acumula pasivamente.</small>
+            </div>
+          </div>
+
+          <!-- Cubeta 4: 10% -->
+          <div class="bucket-card bucket-4">
+            <div class="bucket-header">
+              <span class="bucket-pct">10%</span>
+              <span class="bucket-name">Inversión & Deuda</span>
+            </div>
+            <div class="bucket-balance" id="bucket4Balance">$0.00</div>
+            <div class="bucket-sub-rule">
+              <small>Capital semilla para proyectos de retorno probado (Don Pale, granja, electrónica) y deudas.</small>
+            </div>
+          </div>
+
+          <!-- Cubeta 5: 10% -->
+          <div class="bucket-card bucket-5">
+            <div class="bucket-header">
+              <span class="bucket-pct">10%</span>
+              <span class="bucket-name">Premios (Condicionado)</span>
+            </div>
+            <div class="bucket-balance" id="bucket5Balance">$0.00</div>
+            <div class="bucket-sub-rule">
+              <span class="status-badge" id="rewardLockBadge">🔒 Bloqueado</span>
+              <small>Solo cobrable si cumples metas semanales. Si fallas, se transfiere a Inversión.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formularios de Gastos Específicos -->
+      <div class="pane-grid-3col">
+        
+        <!-- Formulario Gasto Diario (Cubeta 1) -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Gasto Diario (Cubeta 40%)</h3>
+          </div>
+          <div class="form-group">
+            <label>Nombre del gasto:</label>
+            <input type="text" id="gdName" class="input-control" placeholder="Ej. Almuerzo rápido, Pasaje">
+          </div>
+          <div class="form-group">
+            <label>Monto ($):</label>
+            <input type="number" id="gdAmount" class="input-control" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label>Lugar de compra:</label>
+            <input type="text" id="gdPlace" class="input-control" placeholder="Ej. Tienda local, Mercado">
+          </div>
+          <div class="form-group">
+            <label>Categoría:</label>
+            <select id="gdCat" class="input-control">
+              <option value="Personal">Personal</option>
+              <option value="Producción">Producción</option>
+              <option value="Comercial">Comercial</option>
+              <option value="Empresarial">Empresarial</option>
+            </select>
+          </div>
+          <button id="btnAddExpenseDaily" class="btn btn-secondary btn-block mt-2">Registrar Gasto Diario</button>
+        </div>
+
+        <!-- Formulario Gasto Semanal (Cubeta 2) -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Gasto Semanal (Cubeta 20%)</h3>
+          </div>
+          <div class="form-group">
+            <label>Nombre del gasto:</label>
+            <input type="text" id="gwName" class="input-control" placeholder="Ej. Despensa dominical verduras">
+          </div>
+          <div class="form-group">
+            <label>Monto ($):</label>
+            <input type="number" id="gwAmount" class="input-control" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label>Lugar de compra:</label>
+            <input type="text" id="gwPlace" class="input-control" placeholder="Ej. Mercado Otzolotepec">
+          </div>
+          <div class="form-group">
+            <label>Categoría:</label>
+            <select id="gwCat" class="input-control">
+              <option value="Comida">Comida</option>
+              <option value="Higiene">Higiene</option>
+            </select>
+          </div>
+          <button id="btnAddExpenseWeekly" class="btn btn-secondary btn-block mt-2">Registrar Gasto Semanal</button>
+        </div>
+
+        <!-- Formulario Gasto Mensual (Cubeta 3) -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Gasto Mensual (Cubeta 20%)</h3>
+          </div>
+          <div class="form-group">
+            <label>Nombre del gasto:</label>
+            <input type="text" id="gmName" class="input-control" placeholder="Ej. Lisdexanfetamina farmacia">
+          </div>
+          <div class="form-group">
+            <label>Monto ($):</label>
+            <input type="number" id="gmAmount" class="input-control" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label>Lugar de compra:</label>
+            <input type="text" id="gmPlace" class="input-control" placeholder="Ej. Farmacia Especializada">
+          </div>
+          <div class="form-group">
+            <label>Categoría:</label>
+            <select id="gmCat" class="input-control">
+              <option value="Medicamentos">Medicamentos</option>
+              <option value="Ropa">Ropa</option>
+              <option value="Salud">Salud</option>
+            </select>
+          </div>
+          <button id="btnAddExpenseMonthly" class="btn btn-secondary btn-block mt-2">Registrar Gasto Mensual</button>
+        </div>
+
+      </div>
+
+      <!-- Proyectos de Inversión (Cubeta 4) & Premios Condicionados (Cubeta 5) -->
+      <div class="pane-grid-2col mt-3">
+        
+        <!-- Proyectos de Inversión -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">📈</span>
+              <div>
+                <h3>Proyectos de Inversión (Cubeta 10%)</h3>
+                <span class="card-sub">Retorno probado: Don Pale, Granja, Electrónica</span>
+              </div>
+            </div>
+            <button id="btnOpenNewProjectModal" class="btn btn-secondary btn-sm">+ Nuevo Proyecto</button>
+          </div>
+          <div id="investProjectsList" class="projects-list">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Premios con Interruptor Lógico -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">🎁</span>
+              <div>
+                <h3>Gestor de Premios (Cubeta 10%)</h3>
+                <span class="card-sub">Interruptor condicional: Meta cumplida = Recompensa / Fallo = Transferencia a Inversión</span>
+              </div>
+            </div>
+            <button id="btnOpenNewRewardModal" class="btn btn-secondary btn-sm">+ Nuevo Premio</button>
+          </div>
+          <div id="rewardsList" class="rewards-list">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Libro Mayor de los Últimos 7 Días -->
+      <div class="card mt-3">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">📒</span>
+            <div>
+              <h3>Libro Mayor de los Últimos 7 Días</h3>
+              <span class="card-sub">Auditoría determinista de ingresos y egresos</span>
+            </div>
+          </div>
+          <div class="ledger-summary-badges">
+            <span class="status-badge success" id="ledgerIncome7dBadge">Ingresos: $0.00</span>
+            <span class="status-badge danger" id="ledgerExpense7dBadge">Egresos: $0.00</span>
+            <span class="status-badge" id="ledgerNet7dBadge">Balance Neto: $0.00</span>
+          </div>
+        </div>
+
+        <div class="table-responsive mt-2">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th>Tipo</th>
+                <th>Categoría</th>
+                <th>Descripción / Detalle</th>
+                <th>Cubeta</th>
+                <th class="text-right">Monto</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody">
+              <!-- Renderizado dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 3. NUTRICIÓN & DESPENSA OTZOLOTEPEC -->
+    <!-- ================================================================= -->
+    <section id="tab-nutrition" class="module-tab-pane">
+      <div class="pane-grid-2col">
+        
+        <!-- Columna Izquierda: Báscula Renpho & Mifflin St. Jeor -->
+        <div class="nutrition-sidebar">
+          
+          <!-- Báscula Renpho -->
+          <div class="card scale-card" id="scaleCard">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">⚖️</span>
+                <div>
+                  <h2>Báscula RENPHO</h2>
+                  <span class="card-sub">Driver scale.js (QN-Scale / LeFu / SIG)</span>
+                </div>
+              </div>
+              <span id="scaleStatusBadge" class="status-badge disconnected">Desconectada</span>
+            </div>
+
+            <div class="scale-meta-badges">
+              <span id="scaleDeviceBadge" class="scale-mini-badge" style="display: none;">
+                📶 <span id="scaleDeviceName">Renpho</span>
+              </span>
+              <span id="scaleProtocolBadge" class="scale-mini-badge proto" style="display: none;">
+                ⚙️ <span id="scaleProtocolName">QN-Scale</span>
+              </span>
+              <span id="scaleBatteryBadge" class="scale-mini-badge batt" style="display: none;">
+                🔋 <span id="scaleBatteryLevel">--%</span>
+              </span>
+            </div>
+
+            <div class="scale-display-box" id="scaleDisplayBox">
+              <div class="scale-live-tag" id="scaleLiveTag">EN REPOSO</div>
+              <div class="scale-val-wrapper">
+                <span id="liveWeightDisplay" class="scale-weight-number">--.-</span>
+                <span class="scale-unit">kg</span>
+              </div>
+              <div class="scale-status-text" id="scaleStatusDetail">Enciende la báscula pisándola antes de conectar</div>
+            </div>
+
+            <div class="scale-controls">
+              <button id="connectBleBtn" class="btn btn-primary btn-block">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m7 7 10 10-5 5V2l5 5L7 17"/>
+                </svg>
+                <span id="connectBleBtnText">Conectar Báscula Renpho</span>
+              </button>
+              
+              <button id="disconnectBleBtn" class="btn btn-outline btn-block btn-disconnect" style="display: none;">
+                ✕ Desconectar Báscula
+              </button>
+
+              <div class="scale-compat-toggle">
+                <label class="scale-option-label">
+                  <input type="checkbox" id="chkAcceptAll" checked>
+                  <span>Compatibilidad amplia (Todos los dispositivos BLE)</span>
+                </label>
+              </div>
+              
+              <div class="quick-manual-group">
+                <input type="number" id="manualWeightInput" placeholder="Ej. 74.5" step="0.1" min="30" max="250" class="input-control">
+                <button id="setManualWeightBtn" class="btn btn-secondary">Pesar Manual</button>
+                <button id="simulateScaleBtn" class="btn btn-outline" title="Simular lectura de báscula">Simular ⚡</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Perfil Biométrico y Mifflin St. Jeor -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">🧬</span>
+                <div>
+                  <h2>Perfil & Mifflin-St. Jeor</h2>
+                  <span class="card-sub">50% Carbos / 25% Proteína / 25% Grasa</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="profileName">Nombre del Usuario:</label>
+                <input type="text" id="profileName" class="input-control" value="Usuario Principal">
+              </div>
+              <div class="form-group">
+                <label for="profileBirthdate">Fecha de Nacimiento:</label>
+                <input type="date" id="profileBirthdate" class="input-control" value="1996-05-15">
+              </div>
+              <div class="form-group">
+                <label for="profileHeight">Estatura (cm):</label>
+                <input type="number" id="profileHeight" class="input-control" value="175" min="100" max="230">
+              </div>
+              <div class="form-group">
+                <label for="profileGender">Género Biológico:</label>
+                <select id="profileGender" class="input-control">
+                  <option value="male" selected>Masculino (+5 kcal)</option>
+                  <option value="female">Femenino (-161 kcal)</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column: 1/-1;">
+                <label for="profileActivityFactor">Nivel de Actividad (Vinculado a Ejercicio):</label>
+                <select id="profileActivityFactor" class="input-control">
+                  <option value="1.2" selected>Sedentario (1.20) - Rutina inicial / Cero impacto</option>
+                  <option value="1.375">Ligero (1.375) - 15 min diarios rehabilitación</option>
+                  <option value="1.55">Moderado (1.55) - Ejercicio regular de fuerza</option>
+                  <option value="1.725">Intenso (1.725) - Parkour & 200m planos activados</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="tdee-summary-card mt-2">
+              <div class="tdee-metric">
+                <span class="tdee-label">Edad Calculada</span>
+                <span id="calculatedAgeDisplay" class="tdee-val">-- años</span>
+              </div>
+              <div class="tdee-divider"></div>
+              <div class="tdee-metric">
+                <span class="tdee-label">TMB Basal</span>
+                <span id="bmrValue" class="tdee-val">-- kcal</span>
+              </div>
+              <div class="tdee-divider"></div>
+              <div class="tdee-metric highlight">
+                <span class="tdee-label">TDEE Meta</span>
+                <span id="tdeeValue" class="tdee-val big">-- kcal</span>
+              </div>
+            </div>
+
+            <!-- Distribución 50/25/25 -->
+            <div class="macro-cards-grid mt-2">
+              <div class="macro-chip carb-chip">
+                <div class="macro-title">Carbohidratos (50%)</div>
+                <div class="macro-grams" id="carbGrams">-- g</div>
+                <div class="macro-cals" id="carbCals">-- kcal</div>
+              </div>
+              <div class="macro-chip prot-chip">
+                <div class="macro-title">Proteínas (25%)</div>
+                <div class="macro-grams" id="protGrams">-- g</div>
+                <div class="macro-cals" id="protCals">-- kcal</div>
+              </div>
+              <div class="macro-chip fat-chip">
+                <div class="macro-title">Grasas (25%)</div>
+                <div class="macro-grams" id="fatGrams">-- g</div>
+                <div class="macro-cals" id="fatCals">-- kcal</div>
+              </div>
+            </div>
+            <button id="btnRecalculateMifflin" class="btn btn-secondary btn-block mt-2">🔄 Actualizar Metas</button>
+          </div>
+
+          <!-- Monitor de Hambre & Sobrecarga Calórica -->
+          <div class="card mt-3">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">🚨</span>
+                <div>
+                  <h3>Auditoría de Hambre & Sobrecarga</h3>
+                  <span class="card-sub">Detector de apetito vs sobrepaso calórico</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Intensidad del Hambre (1 a 5):</label>
+                <input type="range" id="hungerIntensityRange" min="1" max="5" value="3" class="range-slider">
+                <span id="hungerIntensityVal" class="text-center font-bold">3 - Moderada</span>
+              </div>
+              <div class="form-group">
+                <label>Tipo de Hambre:</label>
+                <select id="hungerType" class="input-control">
+                  <option value="Fisiológica">Fisiológica (estómago vacío)</option>
+                  <option value="Ansiosa">Ansiosa / Emocional</option>
+                  <option value="Craving">Craving / Deseo de recompensa</option>
+                </select>
+              </div>
+            </div>
+            <button id="btnRegisterHunger" class="btn btn-outline btn-block mt-2">Registrar Episodio de Hambre</button>
+            <div id="hungerAdviceBox" class="clinical-note mt-2" style="display: none;">
+              <!-- Consejo determinista según despensa -->
+            </div>
+            <div class="hunger-stats-bar mt-2">
+              <span>Episodios de hambre hoy: <strong id="hungerCountToday">0</strong></span>
+              <span id="calorieAlertBadge" class="status-badge">Dentro del límite</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Columna Derecha: Despensa Otzolotepec, Comparador & Cronograma -->
+        <div class="nutrition-main">
+          
+          <!-- Comparador Precio / Calidad Nutricional -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">⚖️</span>
+                <div>
+                  <h2>Comparador Precio / Calidad Nutricional</h2>
+                  <span class="card-sub">¿Conviene 1 kg de calabaza o 1 kg de zanahoria al mismo precio?</span>
+                </div>
+              </div>
+            </div>
+            <div class="comparator-grid">
+              <div class="comp-col">
+                <label><strong>Alimento A:</strong></label>
+                <select id="compFoodA" class="input-control mb-1">
+                  <!-- Llenado dinámico -->
+                </select>
+                <div class="form-group">
+                  <label>Precio por Kg ($):</label>
+                  <input type="number" id="compPriceA" class="input-control" value="18">
+                </div>
+              </div>
+              <div class="comp-vs">VS</div>
+              <div class="comp-col">
+                <label><strong>Alimento B:</strong></label>
+                <select id="compFoodB" class="input-control mb-1">
+                  <!-- Llenado dinámico -->
+                </select>
+                <div class="form-group">
+                  <label>Precio por Kg ($):</label>
+                  <input type="number" id="compPriceB" class="input-control" value="18">
+                </div>
+              </div>
+            </div>
+            <button id="btnRunNutriCompare" class="btn btn-primary btn-block mt-2">Calcular Densidad de Nutrientes vs Costo</button>
+            <div id="compareResultBox" class="comparison-result-card mt-2" style="display: none;">
+              <!-- Resultado determinista -->
+            </div>
+          </div>
+
+          <!-- Lista Dominical de Otzolotepec (Optimizada para Colesterol/Grasa & Masa Muscular) -->
+          <div class="card mb-3 sunday-market-card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">🥬</span>
+                <div>
+                  <h2>Lista de Compra Dominical (Otzolotepec, Edo. Méx.)</h2>
+                  <span class="card-sub">Productos de temporada económicos: baja grasa/colesterol y eleva masa muscular</span>
+                </div>
+              </div>
+              <button id="btnGenerateSundayList" class="btn btn-primary btn-sm">🛒 Generar Lista Dominical</button>
+            </div>
+            <div id="sundayListContainer" style="display: none;" class="mt-2">
+              <div id="sundayItemsList" class="sunday-items-table">
+                <!-- Renderizado dinámico -->
+              </div>
+              <div class="d-flex justify-between align-center mt-2 p-2 bg-card-subtle radius-md" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-radius: var(--radius-md); background: var(--bg-card-subtle);">
+                <span><strong>Presupuesto Total Estimado:</strong> <span id="sundayTotalCost" class="text-primary font-bold" style="font-family: var(--font-mono); font-size: 1.1rem;">$550.00 MXN</span></span>
+                <button id="btnApplySundayShopping" class="btn btn-secondary btn-sm">✓ Cargar a Despensa & Descontar Cubeta 2</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gestor de Despensa de Otzolotepec -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">🛒</span>
+                <div>
+                  <h2>Despensa Semanal & Productos de Temporada</h2>
+                  <span class="card-sub">Otzolotepec, Estado de México (Económica, baja en grasa y colesterol)</span>
+                </div>
+              </div>
+              <button id="btnOpenAddPantryItemModal" class="btn btn-secondary btn-sm">+ Agregar Compra Exacta</button>
+            </div>
+            <p class="text-muted text-sm mb-2">
+              Ingresa compras exactas (ej. 1 kg de calabacitas, 1/2 kg de zanahoria). La app asigna porciones diarias para agotar el inventario en 7 días sin rebasar tu límite calórico.
+            </p>
+            <div id="pantryInventoryGrid" class="pantry-grid">
+              <!-- Renderizado dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Cronograma Diario con Registro de Horas Reales -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span class="card-icon">🕒</span>
+                <div>
+                  <h2>Cronograma Diario & Checklist de Horas</h2>
+                  <span class="card-sub">Enlace con Medicación, Digestión y Prevención de Desplomes</span>
+                </div>
+              </div>
+              <button id="btnGenerateDietPlan" class="btn btn-primary btn-sm">🎲 Generar Menú con Despensa</button>
+            </div>
+
+            <div class="timeline-container" id="mealsTimelineContainer">
+              <!-- Renderizado dinámicamente con checkboxes y registro de hora real consumida -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 4. MEDICACIÓN (BARRA DE VIDA & FARMACOCINÉTICA) -->
+    <!-- ================================================================= -->
+    <section id="tab-meds" class="module-tab-pane">
+      <div class="pane-grid-2col">
+        
+        <!-- Bloque de Tomas y Checklist -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">💊</span>
+              <div>
+                <h2>Tomas por Bloques de Horario</h2>
+                <span class="card-sub">Registro con hora exacta y predicción fisiológica</span>
+              </div>
+            </div>
+            <button id="btnOpenNewMedModal" class="btn btn-secondary btn-sm">+ Medicamento</button>
+          </div>
+
+          <div id="medicationBlocksContainer" class="med-blocks-list">
+            <!-- Renderizado dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Curva Farmacocinética Dinámica ("Barra de Vida") -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">🧬</span>
+              <div>
+                <h2>Nivel Plasmático ("Barra de Vida")</h2>
+                <span class="card-sub">Simulación determinista 24h según peso, edad y género</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pk-dashboard-box">
+            <div class="pk-current-status">
+              <div class="pk-header-row">
+                <span>Concentración Terapéutica General:</span>
+                <strong id="pkGlobalStatusVal">Estable (78%)</strong>
+              </div>
+              <div class="life-bar-wrapper">
+                <div class="life-bar-fill" id="pkGlobalLifeBar" style="width: 78%;"></div>
+              </div>
+            </div>
+
+            <!-- Desglose por Medicamento -->
+            <div class="pk-drug-breakdown mt-3" id="pkDrugBarsContainer">
+              <!-- Renderizado dinámicamente para Lisdexanfetamina, Bupropión, etc. -->
+            </div>
+
+            <!-- Recomendación de Aprovechamiento de Picos -->
+            <div class="clinical-note mt-3">
+              <h4>🎯 Ventanas de Máximo Aprovechamiento Cognitivo & Motor:</h4>
+              <ul class="text-sm mt-1" id="pkOptimizationTipsList">
+                <li>• <strong>09:30 - 13:30 (Pico Lisdexanfetamina + Bupropión):</strong> Máxima dopamina/noradrenalina. Asigna aquí los 4 bloques más exigentes de Programación o Matemáticas/Física.</li>
+                <li>• <strong>16:00 (Ventana Alprazolam):</strong> Descenso de sobreactivación simpática y mitigación del rebote matutino. Dedicar a tareas de granja o revisión documental sin alta frustración.</li>
+                <li>• <strong>20:30 en adelante (Clonazepam + Valproato):</strong> Inducción de sueño profundo. Cero pantallas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 5. EJERCICIO, RODILLA & BDNF -->
+    <!-- ================================================================= -->
+    <section id="tab-exercise" class="module-tab-pane">
+      <div class="pane-grid-2col">
+        
+        <!-- Rutina Diaria Progresiva (15 min) -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">🦵</span>
+              <div>
+                <h2>Protocolo Diario de 15 Minutos</h2>
+                <span class="card-sub">Rehabilitación de Rodilla & Producción de BDNF sin Impacto</span>
+              </div>
+            </div>
+            <span class="status-badge" id="exerciseDayStatusBadge">Fase 1: Activa</span>
+          </div>
+
+          <div class="rehab-info-box">
+            <p>
+              <strong>Objetivo Biomédico:</strong> Activar la síntesis de <em>BDNF (Factor Neurotrófico Derivado del Cerebro)</em> para potenciar el aprendizaje y contrarrestar el impacto metabólico de Valproato y Risperidona mediante contracciones musculares continuas con <strong>cero impacto articular</strong>.
+            </p>
+          </div>
+
+          <!-- Rutina del Día -->
+          <div class="exercise-routine-box mt-3" id="dailyRoutineContainer">
+            <!-- Renderizado dinámico -->
+          </div>
+
+          <div class="exercise-timer-bar mt-3">
+            <div class="timer-display" id="exerciseTimerDisplay">15:00</div>
+            <div class="btn-group">
+              <button id="btnStartExerciseTimer" class="btn btn-primary">Iniciar 15 Minutos</button>
+              <button id="btnPauseExerciseTimer" class="btn btn-outline">Pausar</button>
+              <button id="btnCompleteExercise" class="btn btn-secondary">✓ Marcar Completado</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desbloqueo Determinista: Parkour & 200m Planos -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">⚡</span>
+              <div>
+                <h2>Desbloqueo de Alto Rendimiento</h2>
+                <span class="card-sub">Parkour & 200m Planos (Árbol de Decisión)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="locked-feature-box" id="highImpactLockBox">
+            <div class="lock-icon" id="highImpactLockIcon">🔒</div>
+            <h3 id="highImpactLockTitle">Fase de Alto Impacto: BLOQUEADA</h3>
+            <p id="highImpactLockDesc" class="text-sm text-muted">
+              Para proteger tu rodilla y asegurar un aterrizaje con relación fuerza/peso segura, el sistema exige el cumplimiento estricto de 3 condiciones biométricas:
+            </p>
+
+            <div class="unlock-criteria-list mt-2">
+              <div class="criterion-item" id="critWeight">
+                <span class="crit-bullet">⚪</span>
+                <span>Peso corporal $\le 75.0$ kg (Peso actual: <strong id="critWeightCurrent">-- kg</strong>)</span>
+              </div>
+              <div class="criterion-item" id="critKneeDays">
+                <span class="crit-bullet">⚪</span>
+                <span>30 días consecutivos sin dolor de rodilla (Días actuales: <strong id="critKneeDaysCurrent">0/30</strong>)</span>
+              </div>
+              <div class="criterion-item" id="critSessions">
+                <span class="crit-bullet">⚪</span>
+                <span>25 sesiones completadas de Fase 1 (Completadas: <strong id="critSessionsCurrent">0/25</strong>)</span>
+              </div>
+            </div>
+
+            <div class="knee-pain-check mt-3">
+              <label class="check-label">
+                <input type="checkbox" id="chkKneePainToday">
+                <span>¿Sentiste dolor o molestias en la rodilla hoy?</span>
+              </label>
+              <button id="btnLogKneeDay" class="btn btn-secondary btn-sm mt-1">Registrar Día de Rodilla</button>
+            </div>
+          </div>
+
+          <!-- Módulo de Parkour & 200m (Visible cuando se desbloquea) -->
+          <div id="unlockedHighImpactContent" class="unlocked-content mt-3" style="display: none;">
+            <div class="badge-success p-2">¡ENHORABUENA! Criterios cumplidos. Rutina de 200m y Parkour desbloqueada.</div>
+            <ul class="text-sm mt-2">
+              <li>• <strong>Parkour Básico:</strong> Rodadas en césped (amortiguación escapular), saltos de precisión a nivel de suelo.</li>
+              <li>• <strong>200m Planos:</strong> 4 series de 200m al 85% de velocidad máxima con 2 minutos de recuperación completa.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 6. TRABAJO, POMODORO & 7 PROYECTOS PRODUCTIVOS -->
+    <!-- ================================================================= -->
+    <section id="tab-work" class="module-tab-pane">
+      
+      <!-- Pomodoro 8x25 con Auditoría de Descanso -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">⏱️</span>
+            <div>
+              <h2>Pomodoro Determinista (8 Ciclos de 25 min / 5 min)</h2>
+              <span class="card-sub">4 Horas diarias dedicadas a programación y granja</span>
+            </div>
+          </div>
+          <span class="status-badge" id="pomodoroCycleBadge">Ciclo 1 de 8</span>
+        </div>
+
+        <div class="pomodoro-timer-layout">
+          <div class="pomodoro-timer-circle">
+            <div class="pomodoro-time-number" id="pomodoroTimerDisplay">25:00</div>
+            <div class="pomodoro-mode-label" id="pomodoroModeLabel">TRABAJO ENFOCADO</div>
+          </div>
+
+          <div class="pomodoro-controls">
+            <div class="btn-group">
+              <button id="btnStartPomodoro" class="btn btn-primary">Iniciar Ciclo</button>
+              <button id="btnPausePomodoro" class="btn btn-outline">Pausar</button>
+              <button id="btnSkipPomodoro" class="btn btn-secondary">Avanzar Fase</button>
+              <button id="btnResetPomodoro" class="btn btn-outline">Reiniciar</button>
+            </div>
+            <div class="pomodoro-progress-dots mt-2" id="pomodoroDotsContainer">
+              <!-- 8 bolitas de ciclos -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Cuestionario Obligatorio de Descanso (Aparece en cada descanso) -->
+        <div id="pomodoroRestAuditBox" class="rest-audit-card mt-3" style="display: none;">
+          <h4>⚠️ Cuestionario Obligatorio de Auditoría de Descanso (Escala 1 a 5)</h4>
+          <p class="text-sm text-muted">Evalúa tus marcadores antes de reanudar el trabajo:</p>
+          <div class="form-grid mt-2">
+            <div class="form-group">
+              <label>Ansiedad (1 calma - 5 extrema):</label>
+              <input type="range" id="auditAnxiety" min="1" max="5" value="1" class="range-slider">
+              <span id="auditAnxietyVal" class="text-center font-bold">1</span>
+            </div>
+            <div class="form-group">
+              <label>Concentración (1 disperso - 5 láser):</label>
+              <input type="range" id="auditFocus" min="1" max="5" value="5" class="range-slider">
+              <span id="auditFocusVal" class="text-center font-bold">5</span>
+            </div>
+            <div class="form-group">
+              <label>Hambre (1 saciado - 5 voraz):</label>
+              <input type="range" id="auditHunger" min="1" max="5" value="2" class="range-slider">
+              <span id="auditHungerVal" class="text-center font-bold">2</span>
+            </div>
+            <div class="form-group">
+              <label>Deseo de Alcohol (1 nulo - 5 urgente):</label>
+              <input type="range" id="auditAlcohol" min="1" max="5" value="1" class="range-slider">
+              <span id="auditAlcoholVal" class="text-center font-bold">1</span>
+            </div>
+          </div>
+          <button id="btnSubmitRestAudit" class="btn btn-primary btn-block mt-2">Registrar Auditoría y Continuar</button>
+        </div>
+      </div>
+
+      <!-- Los 7 Proyectos Productivos -->
+      <div class="projects-hub-container">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-icon">🚜</span>
+            <div>
+              <h2>Los 7 Proyectos Productivos</h2>
+              <span class="card-sub">Hacia la meta de $500,000 mensuales</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="seven-projects-grid mt-2">
+          
+          <!-- 1. App de Seguimiento -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">App #1</span>
+              <h4>📱 App de Seguimiento</h4>
+            </div>
+            <p class="proj-desc">Panel de control psicofisiológico diario: concentración, hambre, ansiedad, depresión y deseo de alcohol.</p>
+            <div class="proj-stat">Estado: <strong>Operativa (Esta App)</strong></div>
+          </div>
+
+          <!-- 2. POS Tienda Don Pale -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">Comercio #2</span>
+              <h4>🏪 POS Tienda Don Pale</h4>
+            </div>
+            <p class="proj-desc">Terminal de cobro, prueba de moneda virtual interna, análisis de productos más vendidos y crédito inteligente.</p>
+            <div class="proj-actions mt-1">
+              <button id="btnOpenPosModal" class="btn btn-secondary btn-sm">Abrir Terminal POS</button>
+            </div>
+          </div>
+
+          <!-- 3. Gallinas Ponedoras -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">Granja #3</span>
+              <h4>🐔 Gallinas Ponedoras</h4>
+            </div>
+            <p class="proj-desc">Parvada de 10 gallinas y 1 gallo. Venta de huevo orgánico de rancho y selección de las mejores para incubar.</p>
+            <div class="form-group mt-1">
+              <label class="text-xs">Huevos recolectados hoy:</label>
+              <div class="quick-manual-group">
+                <input type="number" id="inputEggCount" class="input-control" value="8" min="0">
+                <button id="btnSaveEggs" class="btn btn-outline btn-sm">Guardar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Gallos para Carne -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">Granja #4</span>
+              <h4>🍗 Gallos para Carne</h4>
+            </div>
+            <p class="proj-desc">Cría y sacrificio a las 18 semanas para canal o procesamiento: nuggets, carne molida y salchichas de pollo.</p>
+            <div class="proj-stat">Semana actual de engorda: <strong id="roosterWeekDisplay">Semana 12/18</strong></div>
+          </div>
+
+          <!-- 5. Incubadora -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">Tecnología #5</span>
+              <h4>🐣 Incubadora Automática</h4>
+            </div>
+            <p class="proj-desc">Incubación interna y venta de incubadoras con alta tasa de eclosión a ranchos avícolas y de pelea.</p>
+            <div class="proj-stat">Lote actual: <strong>24 huevos (Temp: 37.6°C / Hum: 58%)</strong></div>
+          </div>
+
+          <!-- 6. Composta -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">Bioinsumos #6</span>
+              <h4>🍂 Composta Térmica</h4>
+            </div>
+            <p class="proj-desc">Tratamiento y fermentación térmica de residuos orgánicos para romper fibras del pasto antes de la lombriz.</p>
+            <div class="proj-stat">Fase de pila: <strong>Enfriamiento post-termófilo</strong></div>
+          </div>
+
+          <!-- 7. Lombricomposta -->
+          <div class="project-tile">
+            <div class="proj-header">
+              <span class="proj-badge">Bioinsumos #7</span>
+              <h4>🪱 Lombricomposta</h4>
+            </div>
+            <p class="proj-desc">Cría de lombriz roja californiana para producción de humus de lombriz y duplicación de biomasa para proteína de gallinas.</p>
+            <div class="proj-stat">Producción estimada: <strong>50 kg humus / quincena</strong></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 7. ESTUDIO (4 HORAS / 6 RAMAS ACADÉMICAS) -->
+    <!-- ================================================================= -->
+    <section id="tab-study" class="module-tab-pane">
+      <div class="pane-grid-2col">
+        
+        <!-- Temporizador de Estudio y Selector de Materia -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">📚</span>
+              <div>
+                <h2>Sesión de Estudio Enfocado (Meta: 4 Horas Diarias)</h2>
+                <span class="card-sub">Cronómetro y registro de horas por rama</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="selectStudyBranch"><strong>Selecciona la Rama Académica:</strong></label>
+            <select id="selectStudyBranch" class="input-control">
+              <option value="Maestría en Ciencias">1. Maestría en Ciencias (Biología, Física, Matemáticas)</option>
+              <option value="Doctorado Neuroingeniería">2. Doctorado en Neuroingeniería (Alemania)</option>
+              <option value="Inglés">3. Inglés (C1/C2 Académico)</option>
+              <option value="Alemán">4. Alemán (B2/C1 Admisión)</option>
+              <option value="Música de Órgano">5. Música de Órgano (Pedalero & Polifonía)</option>
+              <option value="Teología Tomista">6. Teología (Filosofía Tomista)</option>
+            </select>
+          </div>
+
+          <div class="study-timer-box mt-3">
+            <div class="study-time-val" id="studyTimerDisplay">00:00:00</div>
+            <div class="btn-group mt-2">
+              <button id="btnStartStudyTimer" class="btn btn-primary">Iniciar Estudio</button>
+              <button id="btnPauseStudyTimer" class="btn btn-outline">Pausar</button>
+              <button id="btnSaveStudySession" class="btn btn-secondary">Finalizar & Registrar Horas</button>
+            </div>
+          </div>
+
+          <div class="form-group mt-3">
+            <label for="inputStudyNotes">Notas / Conceptos dominados en la sesión:</label>
+            <textarea id="inputStudyNotes" class="input-control" rows="2" placeholder="Ej. Ecuaciones de Navier-Stokes, BCI decodificación cortical, gramática germana Konjunktiv II..."></textarea>
+          </div>
+        </div>
+
+        <!-- Matriz de las 6 Ramas Académicas -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-icon">🏛️</span>
+              <div>
+                <h2>Distribución de las 6 Ramas Académicas</h2>
+                <span class="card-sub">Horas acumuladas y objetivos específicos</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="branches-matrix" id="branchesMatrixContainer">
+            <!-- 6 Tarjetas de materias renderizadas dinámicamente -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal POS Tienda Don Pale -->
+  <div id="posModal" class="modal-backdrop">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>🏪 Terminal POS Don Pale - Cobros & Crédito</h3>
+        <button class="modal-close" id="btnClosePosModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="pos-layout-grid">
+          <div class="pos-catalog">
+            <h4>Catálogo Rápido</h4>
+            <div class="pos-buttons-grid">
+              <button class="btn btn-outline btn-pos-item" data-name="Huevo Orgánico (Kg)" data-price="45">Huevo Orgánico ($45)</button>
+              <button class="btn btn-outline btn-pos-item" data-name="Calabacitas Criollas (Kg)" data-price="18">Calabacitas ($18)</button>
+              <button class="btn btn-outline btn-pos-item" data-name="Nopales (Docena)" data-price="15">Nopales ($15)</button>
+              <button class="btn btn-outline btn-pos-item" data-name="Humus de Lombriz (5Kg)" data-price="80">Humus 5kg ($80)</button>
+              <button class="btn btn-outline btn-pos-item" data-name="Abarrote General" data-price="35">Abarrote ($35)</button>
+            </div>
+          </div>
+          <div class="pos-ticket">
+            <h4>Cuenta Actual</h4>
+            <div id="posTicketList" class="pos-ticket-items">Sin productos</div>
+            <div class="pos-total-row">
+              <strong>Total:</strong> <span id="posTotalVal" class="text-lg font-bold">$0.00</span>
+            </div>
+            <div class="form-group mt-2">
+              <label>Método de Pago:</label>
+              <select id="posPaymentMethod" class="input-control">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Moneda Virtual Pale">Moneda Virtual Pale</option>
+                <option value="Crédito Autorizado">Crédito Autorizado</option>
+              </select>
+            </div>
+            <button id="btnProcessPosSale" class="btn btn-primary btn-block mt-2">Cobrar y Registrar en Cubetas</button>
+          </div>
+        </div>
+
+        <!-- Centro de Pruebas: Moneda Virtual, Analítica y Crédito Inteligente -->
+        <div class="pos-analytics-card">
+          <div class="d-flex justify-between align-center mb-1">
+            <strong>🪙 Moneda Virtual Pale (MVP):</strong>
+            <span class="token-badge">Saldo Activo: <span id="posVirtualTokenBalance">150.00 MVP</span></span>
+          </div>
+          <div class="mt-2">
+            <strong>📊 Analítica de Productos Más Vendidos:</strong>
+            <div id="posTopProductsList" class="mt-1" style="font-size: 0.78rem;">
+              • Huevo Orgánico de Rancho (42 unidades vendidas)<br>
+              • Calabacitas Criollas Otzolotepec (28 kg vendidos)<br>
+              • Nopales Tiernos de Milpa (24 docenas vendidas)<br>
+              • Humus de Lombriz 5kg (12 bolsas vendidas)
+            </div>
+          </div>
+          <div class="mt-2 p-2 bg-card radius-sm" style="border-left: 3px solid var(--accent); padding: 0.5rem; border-radius: var(--radius-sm); background: var(--bg-card);">
+            <strong>💳 Estrategia Determinista de Reinversión con Crédito de Tarjeta:</strong>
+            <p class="text-xs text-muted mt-1" style="margin: 0.25rem 0 0 0;">
+              Invertir el cupo de crédito exclusivamente en mercancía de rotación menor a 14 días (huevos y abarrotes básicos). Con un margen del 30-35%, se liquida el saldo total de la tarjeta antes de la fecha de corte, evitando el pago de intereses y transfiriendo la ganancia neta a la <strong>Cubeta 4 (Inversión)</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Nuevo Proyecto de Inversión (Desglose de Componentes) -->
+  <div id="newProjectModal" class="modal-backdrop">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>Nuevo Proyecto de Inversión (Cubeta 10%)</h3>
+        <button class="modal-close" id="btnCloseNewProjectModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre de Proyecto:</label>
+          <input type="text" id="npName" class="input-control" placeholder="Ej. Lote de componentes para incubadoras">
+        </div>
+        
+        <div class="form-group">
+          <div class="d-flex justify-between align-center mb-1">
+            <label><strong>Desglose de Componentes o Insumos:</strong></label>
+            <button type="button" id="btnAddProjectCompRow" class="btn btn-outline btn-sm">+ Agregar Insumo</button>
+          </div>
+          <div id="npComponentsRowsContainer" class="components-rows-list">
+            <!-- Filas dinámicas -->
+          </div>
+        </div>
+
+        <div class="form-grid mt-2">
+          <div class="form-group">
+            <label>Costo Total del Proyecto:</label>
+            <div id="npTotalCostDisplay" class="font-bold text-primary" style="font-size: 1.25rem; font-family: var(--font-mono);">$0.00 MXN</div>
+          </div>
+          <div class="form-group">
+            <label>Tiempo de Retorno Estimado:</label>
+            <input type="text" id="npRoiTime" class="input-control" placeholder="Ej. 3 semanas, 2 meses">
+          </div>
+        </div>
+
+        <div class="form-group mt-1">
+          <label>Estatus Inicial del Proyecto:</label>
+          <select id="npStatusSelect" class="input-control">
+            <option value="en espera" selected>En espera</option>
+            <option value="en proceso">En proceso</option>
+            <option value="terminado">Terminado</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelNewProject" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveNewProject" class="btn btn-primary">Crear Proyecto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Proyecto de Inversión -->
+  <div id="editProjectModal" class="modal-backdrop">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>Editar Proyecto de Inversión</h3>
+        <button class="modal-close" id="btnCloseEditProjectModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="epProjectId">
+        <div class="form-group">
+          <label>Nombre del Proyecto:</label>
+          <input type="text" id="epName" class="input-control">
+        </div>
+
+        <div class="form-group">
+          <div class="d-flex justify-between align-center mb-1">
+            <label><strong>Editar Componentes o Insumos:</strong></label>
+            <button type="button" id="btnEditAddCompRow" class="btn btn-outline btn-sm">+ Agregar Insumo</button>
+          </div>
+          <div id="epComponentsRowsContainer" class="components-rows-list">
+            <!-- Filas editables -->
+          </div>
+        </div>
+
+        <div class="form-grid mt-2">
+          <div class="form-group">
+            <label>Costo Total Actualizado:</label>
+            <div id="epTotalCostDisplay" class="font-bold text-primary" style="font-size: 1.25rem; font-family: var(--font-mono);">$0.00 MXN</div>
+          </div>
+          <div class="form-group">
+            <label>Tiempo de Retorno:</label>
+            <input type="text" id="epRoiTime" class="input-control">
+          </div>
+        </div>
+
+        <div class="form-group mt-1">
+          <label>Estatus del Proyecto:</label>
+          <select id="epStatusSelect" class="input-control">
+            <option value="en espera">En espera</option>
+            <option value="en proceso">En proceso</option>
+            <option value="terminado">Terminado</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnDeleteProject" class="btn btn-outline text-danger">Eliminar Proyecto</button>
+        <button id="btnCancelEditProject" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveEditProject" class="btn btn-primary">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Nuevo Premio (Con Validación Real Determinista) -->
+  <div id="newRewardModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Crear Premio con Interruptor Lógico</h3>
+        <button class="modal-close" id="btnCloseNewRewardModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-xs text-muted mb-2">
+          El premio solo se podrá cobrar si se cumplen <strong>todas</strong> las metas en los datos reales del sistema. Si fallas, el dinero se transferirá automáticamente a Inversión.
+        </p>
+        <div class="form-group">
+          <label>Nombre del Premio:</label>
+          <input type="text" id="nrName" class="input-control" placeholder="Ej. Gadget de programación, Salida familiar">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Meta de Días Sobrios (Abstinencia):</label>
+            <input type="number" id="nrSoberDays" class="input-control" min="1" value="30">
+          </div>
+          <div class="form-group">
+            <label>Meta de Peso ($\le$ kg):</label>
+            <input type="number" id="nrWeightTarget" class="input-control" step="0.1" value="74.0">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Meta de Dinero ($ Costo del Premio):</label>
+            <input type="number" id="nrMoney" class="input-control" placeholder="2500" value="2500">
+          </div>
+          <div class="form-group">
+            <label>Meta de Tiempo (Fecha Límite):</label>
+            <input type="date" id="nrDeadline" class="input-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelNewReward" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveNewReward" class="btn btn-primary">Registrar Premio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Nuevo Medicamento -->
+  <div id="newMedModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>+ Agregar Nuevo Medicamento</h3>
+        <button class="modal-close" id="btnCloseNewMedModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre del Medicamento:</label>
+          <input type="text" id="nmName" class="input-control" placeholder="Ej. Lisdexanfetamina, Metilfenidato...">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Dosis:</label>
+            <input type="text" id="nmDose" class="input-control" placeholder="Ej. 50mg, 10mg">
+          </div>
+          <div class="form-group">
+            <label>Bloque Horario de Toma:</label>
+            <select id="nmTimeBlock" class="input-control">
+              <option value="07:00">07:00 (Matutino / Despertar)</option>
+              <option value="13:00">13:00 (Almuerzo con comida)</option>
+              <option value="16:00">16:00 (Vespertino / Rescate)</option>
+              <option value="20:00">20:00 (Nocturno / Sueño)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Tmax (Horas hasta pico plasmático):</label>
+            <input type="number" id="nmTmax" class="input-control" step="0.5" value="3.5">
+          </div>
+          <div class="form-group">
+            <label>Vida Media (Horas de eliminación):</label>
+            <input type="number" id="nmHalflife" class="input-control" step="0.5" value="11.0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Rol Terapéutico / Función:</label>
+          <input type="text" id="nmRole" class="input-control" placeholder="Ej. Enfoque dopaminérgico / TDAH">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelNewMed" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveNewMed" class="btn btn-primary">Guardar Medicamento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Medicamento -->
+  <div id="editMedModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Editar Medicamento</h3>
+        <button class="modal-close" id="btnCloseEditMedModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="emMedId">
+        <div class="form-group">
+          <label>Nombre del Medicamento:</label>
+          <input type="text" id="emName" class="input-control">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Dosis:</label>
+            <input type="text" id="emDose" class="input-control">
+          </div>
+          <div class="form-group">
+            <label>Bloque Horario:</label>
+            <select id="emTimeBlock" class="input-control">
+              <option value="07:00">07:00 (Matutino / Despertar)</option>
+              <option value="13:00">13:00 (Almuerzo con comida)</option>
+              <option value="16:00">16:00 (Vespertino / Rescate)</option>
+              <option value="20:00">20:00 (Nocturno / Sueño)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Tmax (Horas hasta pico):</label>
+            <input type="number" id="emTmax" class="input-control" step="0.5">
+          </div>
+          <div class="form-group">
+            <label>Vida Media (Horas):</label>
+            <input type="number" id="emHalflife" class="input-control" step="0.5">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Rol Terapéutico / Función:</label>
+          <input type="text" id="emRole" class="input-control">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnDeleteMed" class="btn btn-outline text-danger">Eliminar</button>
+        <button id="btnCancelEditMed" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveEditMed" class="btn btn-primary">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Agregar Alimento a la Despensa -->
+  <div id="addPantryModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Registrar Compra Exacta de Despensa</h3>
+        <button class="modal-close" id="btnCloseAddPantryModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre del Alimento:</label>
+          <input type="text" id="npiName" class="input-control" placeholder="Ej. Calabacitas criollas, Papa, Zanahoria">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Cantidad comprada (kg / pz):</label>
+            <input type="number" id="npiQty" class="input-control" step="0.1" value="1.0">
+          </div>
+          <div class="form-group">
+            <label>Unidad:</label>
+            <select id="npiUnit" class="input-control">
+              <option value="kg">Kilogramos (kg)</option>
+              <option value="pz">Piezas (pz)</option>
+              <option value="manojo">Manojo</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Precio Pagado Total ($ MXN):</label>
+            <input type="number" id="npiPrice" class="input-control" value="18">
+          </div>
+          <div class="form-group">
+            <label>Categoría Nutricional:</label>
+            <select id="npiCat" class="input-control">
+              <option value="veg">Vegetal de temporada</option>
+              <option value="carb">Carbohidrato / Tubérculo</option>
+              <option value="protein">Proteína Magra</option>
+              <option value="fat">Grasa Saludable / Semillas</option>
+              <option value="fruit">Fruta</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelAddPantry" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveAddPantry" class="btn btn-primary">Guardar e Integrar en Cubeta 2</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Instrucciones Báscula Bluetooth -->
+  <div id="bleHelpModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Conexión con Báscula RENPHO</h3>
+        <button class="modal-close" id="closeBleHelpBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>NutriScale cuenta con el driver especializado <strong>Renpho (scale.js)</strong> compatible con básculas inteligentes RENPHO y afines (Elis 1, Elis Go, ES-24M, ES-26M, ES-30M, ES-CS20M, ES-26BB, R-A012, R-MSC04, etc.) utilizando protocolos <em>QN-Scale, Yolanda, LeFu/Chipsea 55AA y SIG Weight Scale</em>.</p>
+        <ol class="help-list">
+          <li>Asegúrate de usar Google Chrome o Edge en Android, Mac, Windows o ChromeOS.</li>
+          <li>Enciende el Bluetooth de tu dispositivo.</li>
+          <li>Pisa la báscula para que encienda su pantalla y comience a transmitir la señal Bluetooth.</li>
+          <li>Presiona <strong>"Conectar Báscula Renpho"</strong> y elígela en la lista emergente.</li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <button id="ackBleHelpBtn" class="btn btn-primary">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: Driver de Báscula y Motor Central -->
+  <script src="scale.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
