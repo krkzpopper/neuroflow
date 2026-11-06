@@ -2,10 +2,11 @@
 
 **Aegis OS** es una plataforma client-side determinista de mando personal y auditoría de salud (sin IA, impulsada por árboles de decisiones y datos duros) concebida para:
 1. **Prevención rigurosa de recaídas en alcohol y tabaco** con detección fisiológica en tiempo real, registro de momento exacto y protocolo de emergencia bloqueante.
-2. **Rehabilitación articular de rodilla y producción progresiva de BDNF** con criterios cuantitativos para desbloquear parkour y 200m planos.
+2. **Rehabilitación articular de rodilla y producción progresiva de BDNF** con criterios cuantitativos para desbloquear parkour y 200m planos (contadores inicializados en 0).
 3. **Optimización del tiempo y flujo financiero determinista** hacia la meta de **$500,000 MXN mensuales libres**.
 4. **Sincronización cronobiológica de medicación, nutrición y cognición** en 7 apartados integrados.
 5. **Cálculo dinámico de racha de abstinencia:** Contador automático según el calendario local comenzando formalmente el **14 de octubre de 2026**, con selector manual de fecha y sincronización reactiva en tiempo real.
+6. **Perfil Biométrico Personalizado:** Configurado para **José Manuel** (Nacimiento: `17/07/1996`, Estatura: `1.72 m`, Género: `Masculino`).
 
 ---
 
@@ -24,10 +25,11 @@
 ### 1. 🌙 Sueño, Cronobiología & Registro de Craving
 - **Meta:** 9 horas de sueño reparador para regeneración neuroquímica y consolidación sináptica de BDNF.
 - **Protocolo Horario:**
-  - `20:00`: Toma de medicación nocturna (*Valproato, Risperidona, Clonazepam*).
+  - `20:00`: Toma de medicación nocturna (*Valproato Semisódico, Risperidona, Clonazepam*).
   - `20:30`: Desconexión absoluta de pantallas y a la cama.
   - `21:00`: Inicio del sueño.
   - `06:00`: Despertar matutino e hidratación natural.
+- **Simplificación del Checklist:** Se retiraron los checkboxes redundantes de la cronología nocturna, dejando únicamente la casilla de certificación formal del protocolo nocturno debajo del cronómetro (`chkSleepProtocolAccomplished`).
 - **Cronómetro de Sueño Continuo:**
   - Se activa con un clic al irse a la cama (`🌙 Iniciar Sueño`) y se apaga al despertar (`☀️ Despertar y Apagar Cronómetro`).
   - Persiste el tiempo exacto en `localStorage` (resistente al cierre del navegador o apagado del dispositivo).
@@ -41,8 +43,9 @@
   - **Botón de Reincidencia:** Si se vuelve a tomar o fumar, al confirmar se reinicia el contador inmediatamente a **Día 0**, se actualiza la fecha de reinicio al momento exacto y se registra en la auditoría permanente. Sincronizado en tiempo real con el Header y el Gestor de Premios.
   - **Slider de Craving de Alcohol (1 al 5):** Desde 1 (Ninguno / Mente clara) hasta 5 (Crítico / Riesgo inminente).
   - **Slider de Craving de Fumar (1 al 5):** Escala del 1 al 5 con descriptores dinámicos en tiempo real.
-  - **Botón "Registrar Momento Exacto del Registro":** Guarda la fecha y hora exacta (`timestamp`), detonante identificado y aplica un dictamen determinista inmediato (hidratación helada, semillas de calabaza, respiración 4-7-8 o disparo del protocolo de emergencia si $\ge 4$).
-  - **Historial de Craving:** Tabla con los registros cronológicos y acciones tomadas.
+  - **Botón "Registrar Momento Exacto del Registro":** Guarda la fecha y hora exacta (`timestamp`), detonante identificado y aplica un dictamen determinista inmediato.
+
+---
 
 ### 2. 💰 Contabilidad (5 Cubetas de Flujo & Libro Mayor)
 - **Saldos Limpios desde $0.00:** Inicio en ceros reales y botón "Reiniciar a $0".
@@ -62,43 +65,76 @@
   - Costo total calculado automáticamente a partir de la suma de los componentes.
   - Selector de estatus: `en espera`, `en proceso` o `terminado`.
   - Tarjetas clickeables para abrir el modal de edición, añadir nuevos insumos, modificar precios o eliminar el proyecto.
-- **Gestor de Premios con Interruptor Lógico Auditado:**
-  - Despliega todas las metas en formato de fila (`flex-direction: row`): (1) Tiempo sobrio (del contador de abstinencia), (2) Meta de peso ($\le$ kg de la báscula), (3) Saldo suficiente en Cubeta 5 ($), y (4) Fecha límite vigente.
+- **Gestor de Premios con Interruptor Lógico Auditado, Edición y Eliminación:**
+  - Despliega todas las metas en formato de fila (`flex-direction: row`):
+    1. Tiempo sobrio (obtenido de datos reales del contador de abstinencia).
+    2. Meta de peso ($\le$ kg obtenido de datos reales de la báscula).
+    3. Meta de dinero ($ costo y saldo en Cubeta 5).
+    4. Meta de tiempo (fecha límite).
+  - **Edición y Eliminación de Premios:** Botón ✏️ para editar metas/nombre y botón 🗑️ para eliminar premios no deseados sin penalizar fondos.
   - **Cobro y Retiro:** Al cumplirse todas las metas reales, se habilita el cobro; una vez cobrado, el apartado del premio se borra automáticamente.
   - **Penalización Determinista y Retiro:** Si se declara incumplimiento o fallo, los fondos se transfieren automáticamente a la Cubeta de Inversión y Deuda, y el apartado del premio se borra de la vista.
 - **Libro Mayor de los Últimos 7 Días:** Tabla cronológica auditable con hora y fecha de la transacción, si fue ingreso o egreso, categoría, descripción, cubeta afectada y monto.
-- **Historial Diario de Registros (Desde el 15 de Octubre de 2026):** Tabla auditable permanente que conserva la memoria de cada día (fecha, racha de abstinencia, peso de báscula, horas de sueño, cumplimiento de protocolo 20:30-06:00, cronograma de comidas, bloques de medicación y pomodoros), con reinicio automático de checklists en medianoche o mediante botón "🔄 Cerrar Día / Nuevo Día".
+- **Historial Diario de Registros:** Tabla auditable permanente que conserva la memoria de cada día con reinicio automático diario.
+
+---
 
 ### 3. 🥗 Nutrición, Despensa de Otzolotepec & Mifflin-St. Jeor
-- **Báscula RENPHO (scale.js):** Conexión Web Bluetooth con driver para protocolos múltiples (QN-Scale, LeFu/Chipsea 55AA, SIG), sonido chime de fijación y modales informativos corregidos.
+- **Perfil de Usuario Integrado:** Nombre: **José Manuel**, Nacimiento: **17/07/1996** (calcula edad automáticamente), Estatura: **172 cm**, Género: **Masculino**.
+- **Báscula RENPHO (scale.js):** Conexión Web Bluetooth con driver multi-protocolo (QN-Scale, LeFu/Chipsea 55AA, SIG), sonido chime de fijación y modales informativos.
 - **Fórmula de Mifflin - St. Jeor:** Distribución calórica estricta: **50% Carbohidratos**, **25% Proteínas**, **25% Grasas Saludables**, sincronizada con el factor de actividad física del bloque de ejercicio.
 - **Lista Semanal Dominical de Otzolotepec:** Generador de compras priorizando alimentos de temporada económicos que reducen grasa visceral y colesterol LDL mientras aumentan masa muscular (nopales tiernos, calabacitas criollas, quelites/espinacas, pechuga de granja, huevos de rancho, aguacate criollo, avena integral, semillas de calabaza y manzana perón). Botón para integrarla en 1 clic a la despensa y Cubeta 2.
 - **Comparador Precio / Calidad Biológica:** Evalúa nutrientes clave contra el precio de mercado para determinar la mejor compra económica y nutritiva.
 - **Cronograma de Comidas y Medicación:**
-  - `07:00`: Agua natural + Medicación matutina (*Lisdexanfetamina, Bupropión, Sertralina, Valproato, Risperidona*).
+  - `07:00`: Agua natural + Medicación matutina (*Lisdexanfetamina, Bupropión, Sertralina, Valproato, Risperidona, Alprazolam*).
   - `07:30`: Desayuno proteico (sin jugos cítricos ni harinas refinadas para evitar interferencia de pH y picos de insulina).
   - `11:00`: Snack vegetal crujiente o 15g semillas de calabaza.
   - `13:00`: Almuerzo balanceado + **Toma de Sertralina y Bupropión** con alimentos para evitar irritación gástrica.
-  - `16:00`: Toma de Alprazolam + Snack de rescate (manzana con canela / infusión caliente; **cero toronja** por inhibición de CYP3A4).
+  - `15:00`: Toma vespertina de Alprazolam.
+  - `16:00`: Snack de rescate (manzana con canela / infusión caliente; **cero toronja** por inhibición de CYP3A4).
   - `18:30`: Cena digestiva ligera (pescado al vapor o claras con nopales/calabazas).
-  - `20:00`: Medicación nocturna (*Valproato, Risperidona, Clonazepam*).
+  - `20:00`: Medicación nocturna (*Valproato Semisódico, Risperidona, Clonazepam*).
 - **Checklist y Monitor de Hambre:** Registro con hora exacta, tipo (fisiológico vs craving) y sugerencia saciante determinista.
 
+---
+
 ### 4. 💊 Medicación & Farmacocinética ("Barra de Vida")
-- **Curva Farmacocinética Individualizada:** Cálculo de concentración plasmática activa ajustada por peso, edad y sexo biológico del paciente.
+- **Esquema Exacto de 12 Medicamentos:**
+  | Hora | Medicamento | Dosis | Función Terapéutica |
+  | :--- | :--- | :--- | :--- |
+  | **07:00** | Lisdexanfetamina | 30 mg | Enfoque dopaminérgico / TDAH |
+  | **07:00** | Bupropión | 150 mg | Antidepresivo dopamina/NA matutino |
+  | **07:00** | Sertralina | 100 mg | ISRS serotonina matutina |
+  | **07:00** | Valproato Semisódico | 500 mg | Estabilizador / GABA matutino |
+  | **07:00** | Risperidona | 1 mg | Antipsicótico / Bloqueo D2 matutino |
+  | **07:00** | Alprazolam | 0.25 mg | Ansiolítico matutino |
+  | **13:00** | Sertralina | 100 mg | ISRS serotonina (con almuerzo) |
+  | **13:00** | Bupropión | 150 mg | Tono noradrenérgico vespertino |
+  | **15:00** | Alprazolam | 0.25 mg | Ansiolítico de rescate tarde |
+  | **20:00** | Valproato Semisódico | 500 mg | Estabilizador nocturno |
+  | **20:00** | Risperidona | 2 mg | Modulación nocturna |
+  | **20:00** | Clonazepam | 1 mg | Inductor del sueño GABAérgico |
+
+- **Curva Farmacocinética Individualizada:** Cálculo dinámico de concentración plasmática activa ajustada según el peso (74.5 kg), edad (calculada de 17/07/1996) y género masculino de José Manuel.
 - **CRUD Completo de Medicamentos:**
-  - Botón **"+ Medicamento"** para dar de alta nuevos fármacos indicando nombre, dosis, bloque horario, $T_{\max}$, $t_{1/2}$ y función terapéutica.
+  - Botón **"+ Medicamento"** para dar de alta nuevos fármacos indicando nombre, dosis, bloque horario (`07:00`, `13:00`, `15:00`, `20:00`), $T_{\max}$, $t_{1/2}$ y función terapéutica.
   - Botón de edición (✏️) en cada medicamento para modificar dosis, horarios o parámetros cinéticos.
   - Botón de eliminación (🗑️) con confirmación previa.
-  - Agrupación por bloques horarios: `07:00`, `13:00`, `16:00` y `20:00`.
-- **Aprovechamiento de Picos:** Sincronización del pico dopaminérgico de Lisdexanfetamina (09:30 - 13:30) para las tareas de mayor exigencia mental en programación y estudio.
+  - Bloque dinámico especial para las **15:00**.
+
+---
 
 ### 5. 🏃 Ejercicio, Rodilla & Estimulación de BDNF
-- **Protocolo de 15 Minutos:** Ejercicios isométricos articulares seguros para la rodilla (Wall-sit 45°, elevaciones de pierna recta, puentes de glúteo, curl femoral y marcha) orientados a secretar BDNF y mitigar efectos metabólicos de fármacos.
+- **Contadores de Desbloqueo Inicializados en 0:**
+  - Días consecutivos sin dolor de rodilla: **0 / 30 días**.
+  - Sesiones completadas de Fase 1: **0 / 25 sesiones**.
+- **Protocolo Progresivo de 15 Minutos:** Ejercicios isométricos articulares seguros para la rodilla (Wall-sit 45°, elevaciones de pierna recta, puentes de glúteo, curl femoral y marcha) orientados a secretar BDNF y mitigar efectos metabólicos de fármacos.
 - **Desbloqueo Determinista de Parkour y 200m Planos:** Criterios cuantitativos estrictos:
   1. Peso $\le 75.0$ kg.
   2. 30 días consecutivos con dolor de rodilla en 0/10.
   3. 25 sesiones completadas de la Fase 1.
+
+---
 
 ### 6. 💼 Trabajo (Pomodoro 8x25m) & Proyectos Productivos
 - **8 Ciclos Pomodoro (4 horas netas):** Pausas de 5 minutos con cuestionario obligatorio (Ansiedad, Concentración, Hambre y Deseo de Alcohol).
@@ -111,6 +147,8 @@
   5. *Incubadora Automática:* Tasa alta de eclosión, orientada a ranchos avícolas y gallos de pelea.
   6. *Composta Térmica:* Separación de residuos orgánicos para alimentar la lombricomposta tras romper fibras del pasto.
   7. *Lombricomposta:* Lombriz roja californiana para humus y proteína viva para gallinas.
+
+---
 
 ### 7. 📚 Estudio Estratégico (4 Horas / 6 Ramas)
 Cronometraje y acumulación de horas en:

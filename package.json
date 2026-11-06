@@ -1,0 +1,18 @@
+{
+  "name": "neuroflow-aegis-os",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Aegis OS - Panel de Control Determinista 360°, Salud, Báscula Renpho, Farmacocinética y Contabilidad con Next.js y Supabase",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.49.1",
+    "next": "15.1.6",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  }
+}

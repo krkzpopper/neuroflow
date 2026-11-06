@@ -112,7 +112,10 @@
         </div>
       </div>
 
-      <div class="header-actions">
+      <div class="header-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+        <span id="supabaseSyncBadge" class="status-badge success" style="font-size: 0.72rem; cursor: pointer;" onclick="window.syncWithSupabaseNow && window.syncWithSupabaseNow()" title="Conectado a Supabase PostgreSQL (Haz clic para sincronizar ahora)">
+          ☁️ Supabase: Conectado
+        </span>
         <button id="btnHeaderNewDay" class="btn btn-outline btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; border-color: var(--accent); color: var(--text-color);" title="Cerrar registros de hoy y reiniciar checklists para el nuevo día">
           🔄 Cerrar Día / Nuevo Día
         </button>
@@ -177,7 +180,6 @@
                 <strong>Toma de Medicación Nocturna</strong>
                 <p>Valproato + Risperidona + Clonazepam con medio vaso de agua tibia.</p>
               </div>
-              <input type="checkbox" id="chkSleepMedNight" class="task-checkbox">
             </div>
             <div class="chrono-item">
               <span class="chrono-time">20:30</span>
@@ -185,7 +187,6 @@
                 <strong>Desconexión de Pantallas y a la Cama</strong>
                 <p>Cero luz azul, ambiente fresco (18-20°C), habitación en penumbra absoluta.</p>
               </div>
-              <input type="checkbox" id="chkSleepScreensOff" class="task-checkbox">
             </div>
             <div class="chrono-item">
               <span class="chrono-time">21:00</span>
@@ -763,15 +764,15 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="profileName">Nombre del Usuario:</label>
-                <input type="text" id="profileName" class="input-control" value="Usuario Principal">
+                <input type="text" id="profileName" class="input-control" value="José Manuel">
               </div>
               <div class="form-group">
                 <label for="profileBirthdate">Fecha de Nacimiento:</label>
-                <input type="date" id="profileBirthdate" class="input-control" value="1996-05-15">
+                <input type="date" id="profileBirthdate" class="input-control" value="1996-07-17">
               </div>
               <div class="form-group">
                 <label for="profileHeight">Estatura (cm):</label>
-                <input type="number" id="profileHeight" class="input-control" value="175" min="100" max="230">
+                <input type="number" id="profileHeight" class="input-control" value="172" min="100" max="230">
               </div>
               <div class="form-group">
                 <label for="profileGender">Género Biológico:</label>
@@ -1577,6 +1578,51 @@
     </div>
   </div>
 
+  <!-- Modal Editar Premio (Auditable & Eliminable) -->
+  <div id="editRewardModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Editar Premio con Interruptor Lógico</h3>
+        <button class="modal-close" id="btnCloseEditRewardModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="erRewardId">
+        <p class="text-xs text-muted mb-2">
+          Modifica los parámetros auditables del premio o elimínalo si ya no deseas perseguir este objetivo.
+        </p>
+        <div class="form-group">
+          <label>Nombre del Premio:</label>
+          <input type="text" id="erName" class="input-control">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Meta de Días Sobrios (Abstinencia):</label>
+            <input type="number" id="erSoberDays" class="input-control" min="1">
+          </div>
+          <div class="form-group">
+            <label>Meta de Peso (&le; kg):</label>
+            <input type="number" id="erWeightTarget" class="input-control" step="0.1">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Meta de Dinero ($ Costo del Premio):</label>
+            <input type="number" id="erMoney" class="input-control">
+          </div>
+          <div class="form-group">
+            <label>Meta de Tiempo (Fecha Límite):</label>
+            <input type="date" id="erDeadline" class="input-control">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnDeleteRewardModal" class="btn btn-outline text-danger">Eliminar Premio</button>
+        <button id="btnCancelEditReward" class="btn btn-outline">Cancelar</button>
+        <button id="btnSaveEditReward" class="btn btn-primary">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Nuevo Medicamento -->
   <div id="newMedModal" class="modal-backdrop">
     <div class="modal-box">
@@ -1599,6 +1645,7 @@
             <select id="nmTimeBlock" class="input-control">
               <option value="07:00">07:00 (Matutino / Despertar)</option>
               <option value="13:00">13:00 (Almuerzo con comida)</option>
+              <option value="15:00">15:00 (Tarde / Rescate Alprazolam)</option>
               <option value="16:00">16:00 (Vespertino / Rescate)</option>
               <option value="20:00">20:00 (Nocturno / Sueño)</option>
             </select>
@@ -1649,6 +1696,7 @@
             <select id="emTimeBlock" class="input-control">
               <option value="07:00">07:00 (Matutino / Despertar)</option>
               <option value="13:00">13:00 (Almuerzo con comida)</option>
+              <option value="15:00">15:00 (Tarde / Rescate Alprazolam)</option>
               <option value="16:00">16:00 (Vespertino / Rescate)</option>
               <option value="20:00">20:00 (Nocturno / Sueño)</option>
             </select>

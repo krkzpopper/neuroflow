@@ -75,9 +75,9 @@ const DEFAULT_STATE = {
     relapses: []
   },
   userProfile: {
-    name: 'Usuario Principal',
-    birthdate: '1996-05-15',
-    height: 175,
+    name: 'José Manuel',
+    birthdate: '1996-07-17',
+    height: 172,
     gender: 'male',
     activityFactor: 1.2,
     weight: 74.5
@@ -173,29 +173,30 @@ const DEFAULT_STATE = {
   },
   medication: {
     medsList: [
-      { id: 'm1', name: 'Lisdexanfetamina', dose: '50mg', timeBlock: '07:00', tmax: 3.5, halflife: 11, role: 'Enfoque dopaminérgico / TDAH' },
+      { id: 'm1', name: 'Lisdexanfetamina', dose: '30mg', timeBlock: '07:00', tmax: 3.5, halflife: 11, role: 'Enfoque dopaminérgico / TDAH' },
       { id: 'm2', name: 'Bupropión', dose: '150mg', timeBlock: '07:00', tmax: 3.0, halflife: 14, role: 'Antidepresivo dopamina/NA matutino' },
-      { id: 'm_sert_am', name: 'Sertralina', dose: '50mg', timeBlock: '07:00', tmax: 6.0, halflife: 26, role: 'ISRS serotonina matutina' },
-      { id: 'm3', name: 'Ácido Valproico', dose: '500mg', timeBlock: '07:00', tmax: 3.0, halflife: 15, role: 'Estabilizador / GABA matutino' },
-      { id: 'm4', name: 'Risperidona', dose: '1mg', timeBlock: '07:00', tmax: 1.5, halflife: 20, role: 'Antipsicótico / Bloqueo D2 matutino' },
-      { id: 'm5', name: 'Sertralina (Almuerzo)', dose: '50mg', timeBlock: '13:00', tmax: 6.0, halflife: 26, role: 'ISRS serotonina (con almuerzo)' },
-      { id: 'm6', name: 'Bupropión (Refuerzo)', dose: '150mg', timeBlock: '13:00', tmax: 3.0, halflife: 14, role: 'Tono noradrenérgico vespertino' },
-      { id: 'm7', name: 'Alprazolam', dose: '0.25mg', timeBlock: '16:00', tmax: 1.5, halflife: 11, role: 'Ansiolítico de rescate' },
-      { id: 'm8', name: 'Ácido Valproico (Noche)', dose: '500mg', timeBlock: '20:00', tmax: 3.0, halflife: 15, role: 'Estabilizador nocturno' },
-      { id: 'm9', name: 'Risperidona (Noche)', dose: '1mg', timeBlock: '20:00', tmax: 1.5, halflife: 20, role: 'Modulación nocturna' },
-      { id: 'm10', name: 'Clonazepam', dose: '0.5mg', timeBlock: '20:00', tmax: 2.5, halflife: 35, role: 'Inductor del sueño GABAérgico' }
+      { id: 'm3', name: 'Sertralina', dose: '100mg', timeBlock: '07:00', tmax: 6.0, halflife: 26, role: 'ISRS serotonina matutina' },
+      { id: 'm4', name: 'Valproato Semisódico', dose: '500mg', timeBlock: '07:00', tmax: 3.0, halflife: 15, role: 'Estabilizador / GABA matutino' },
+      { id: 'm5', name: 'Risperidona', dose: '1mg', timeBlock: '07:00', tmax: 1.5, halflife: 20, role: 'Antipsicótico / Bloqueo D2 matutino' },
+      { id: 'm6', name: 'Alprazolam', dose: '0.25mg', timeBlock: '07:00', tmax: 1.5, halflife: 11, role: 'Ansiolítico matutino' },
+      { id: 'm7', name: 'Sertralina (Almuerzo)', dose: '100mg', timeBlock: '13:00', tmax: 6.0, halflife: 26, role: 'ISRS serotonina (con almuerzo)' },
+      { id: 'm8', name: 'Bupropión (Refuerzo)', dose: '150mg', timeBlock: '13:00', tmax: 3.0, halflife: 14, role: 'Tono noradrenérgico vespertino' },
+      { id: 'm9', name: 'Alprazolam (Tarde)', dose: '0.25mg', timeBlock: '15:00', tmax: 1.5, halflife: 11, role: 'Ansiolítico de rescate tarde' },
+      { id: 'm10', name: 'Valproato Semisódico (Noche)', dose: '500mg', timeBlock: '20:00', tmax: 3.0, halflife: 15, role: 'Estabilizador nocturno' },
+      { id: 'm11', name: 'Risperidona (Noche)', dose: '2mg', timeBlock: '20:00', tmax: 1.5, halflife: 20, role: 'Modulación nocturna' },
+      { id: 'm12', name: 'Clonazepam', dose: '1mg', timeBlock: '20:00', tmax: 2.5, halflife: 35, role: 'Inductor del sueño GABAérgico' }
     ],
     takenBlocksToday: {
       '07:00': false,
       '13:00': false,
-      '16:00': false,
+      '15:00': false,
       '20:00': false
     },
     takenTimes: {}
   },
   exercise: {
-    consecutiveNoPainDays: 14,
-    completedSessions: 18,
+    consecutiveNoPainDays: 0,
+    completedSessions: 0,
     todayKneeLogged: false,
     routineExercises: [
       { name: 'Wall-Sit Isométrico a 45°', desc: 'Espalda firme a la pared sin bajar a 90°. Cuádriceps bajo tensión continua sin compresión meniscal.', time: '4 series x 45 seg' },
@@ -263,13 +264,31 @@ function closeModal(modalId) {
 }
 
 // =============================================================================
-// 2. INICIALIZACIÓN
+// 2. INICIALIZACIÓN & SINCRONIZACIÓN CON SUPABASE (NEXT.JS)
 // =============================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
+let supabaseSyncTimeout = null;
+
+function renderAllModules() {
+  renderSleepModule();
+  renderAbstinenceModule();
+  renderDailyRecordsHistory();
+  renderAccountingModule();
+  renderNutritionModule();
+  renderMedicationModule();
+  renderExerciseModule();
+  renderWorkModule();
+  renderStudyModule();
+  updateHeaderStats();
+}
+
+function initAegisOS() {
+  if (typeof window !== 'undefined' && window.__aegisInitialized) return;
+  if (typeof window !== 'undefined') window.__aegisInitialized = true;
+
   // Asegurar que todos los modales estén ocultos de inicio
   [
-    'bleHelpModal', 'addPantryModal', 'newRewardModal', 'newProjectModal',
+    'bleHelpModal', 'addPantryModal', 'newRewardModal', 'editRewardModal', 'newProjectModal',
     'editProjectModal', 'newMedModal', 'editMedModal', 'posModal', 'relapseEmergencyModal'
   ].forEach(closeModal);
 
@@ -282,16 +301,100 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(updateClockAndHeader, 30000);
 
   // Renderizar vistas de todos los módulos
-  renderSleepModule();
-  renderAbstinenceModule();
-  renderDailyRecordsHistory();
-  renderAccountingModule();
-  renderNutritionModule();
-  renderMedicationModule();
-  renderExerciseModule();
-  renderWorkModule();
-  renderStudyModule();
-});
+  renderAllModules();
+
+  // Sincronizar con base de datos Supabase PostgreSQL
+  syncFromSupabase();
+}
+
+if (typeof window !== 'undefined') {
+  window.initAegisOS = initAegisOS;
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAegisOS);
+  } else {
+    setTimeout(initAegisOS, 0);
+  }
+}
+
+function setSupabaseBadge(status, text) {
+  if (typeof document === 'undefined') return;
+  const badge = document.getElementById('supabaseSyncBadge');
+  if (!badge) return;
+  badge.className = `status-badge ${status}`;
+  badge.textContent = text;
+}
+
+async function syncFromSupabase() {
+  if (typeof fetch === 'undefined') return;
+  try {
+    setSupabaseBadge('warn', '☁️ Supabase: Sincronizando...');
+    const res = await fetch('/api/state', { method: 'GET', cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data && data.state && data.state.accounting && data.state.medication) {
+      // Fusionar estado de Supabase preservando las actualizaciones más recientes
+      aegisState = Object.assign({}, DEFAULT_STATE, data.state);
+      aegisState.userProfile = Object.assign({}, DEFAULT_STATE.userProfile, data.state.userProfile || {});
+      aegisState.accounting = Object.assign({}, DEFAULT_STATE.accounting, data.state.accounting || {});
+      aegisState.nutrition = Object.assign({}, DEFAULT_STATE.nutrition, data.state.nutrition || {});
+      aegisState.medication = Object.assign({}, DEFAULT_STATE.medication, data.state.medication || {});
+      aegisState.exercise = Object.assign({}, DEFAULT_STATE.exercise, data.state.exercise || {});
+      aegisState.work = Object.assign({}, DEFAULT_STATE.work, data.state.work || {});
+      aegisState.study = Object.assign({}, DEFAULT_STATE.study, data.state.study || {});
+      aegisState.sleep = Object.assign({}, DEFAULT_STATE.sleep, data.state.sleep || {});
+      aegisState.abstinence = Object.assign({}, DEFAULT_STATE.abstinence, data.state.abstinence || {});
+
+      const absStats = calculateAbstinenceStats();
+      aegisState.abstinence.days = absStats.days;
+      aegisState.sobrietyDays = absStats.days;
+
+      localStorage.setItem('aegis_master_state', JSON.stringify(aegisState));
+      renderAllModules();
+      setSupabaseBadge('success', '☁️ Supabase: Sincronizado ✓');
+    } else {
+      // Si en Supabase aún solo está la semilla base, subimos el estado completo actual
+      await pushStateToSupabaseImmediate();
+    }
+  } catch (err) {
+    setSupabaseBadge('success', '☁️ Supabase: Activo (Local+Cloud)');
+  }
+}
+
+async function pushStateToSupabaseImmediate() {
+  if (typeof fetch === 'undefined' || !aegisState) return;
+  try {
+    setSupabaseBadge('warn', '☁️ Guardando en Supabase...');
+    const res = await fetch('/api/state', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ state: aegisState })
+    });
+    if (res.ok) {
+      setSupabaseBadge('success', '☁️ Supabase: Sincronizado ✓');
+    } else {
+      setSupabaseBadge('warn', '☁️ Supabase: Guardado Local');
+    }
+  } catch (e) {
+    setSupabaseBadge('warn', '☁️ Supabase: Guardado Local');
+  }
+}
+
+function scheduleSupabaseSync() {
+  if (typeof window === 'undefined' || typeof fetch === 'undefined') return;
+  if (supabaseSyncTimeout) clearTimeout(supabaseSyncTimeout);
+  supabaseSyncTimeout = setTimeout(() => {
+    pushStateToSupabaseImmediate();
+  }, 450);
+}
+
+if (typeof window !== 'undefined') {
+  window.syncWithSupabaseNow = async function() {
+    await pushStateToSupabaseImmediate();
+  };
+}
 
 function loadMasterState() {
   const saved = localStorage.getItem('aegis_master_state');
@@ -387,6 +490,30 @@ function loadMasterState() {
       if (!Array.isArray(aegisState.accounting.ledger)) {
         aegisState.accounting.ledger = [];
       }
+
+      // Migración v5 (Noviembre 2026): Actualización de perfil José Manuel, reinicio de contadores de rodilla a 0, y actualización del esquema de 12 medicamentos con bloque 15:00
+      if (!localStorage.getItem('aegis_v5_nov06_updates')) {
+        aegisState.userProfile = Object.assign({}, aegisState.userProfile, {
+          name: 'José Manuel',
+          birthdate: '1996-07-17',
+          height: 172,
+          gender: 'male'
+        });
+        if (aegisState.exercise) {
+          aegisState.exercise.consecutiveNoPainDays = 0;
+          aegisState.exercise.completedSessions = 0;
+        }
+        if (aegisState.medication) {
+          aegisState.medication.medsList = JSON.parse(JSON.stringify(DEFAULT_STATE.medication.medsList));
+          aegisState.medication.takenBlocksToday = {
+            '07:00': false,
+            '13:00': false,
+            '15:00': false,
+            '20:00': false
+          };
+        }
+        localStorage.setItem('aegis_v5_nov06_updates', 'true');
+      }
     } catch (e) {
       console.error('Error al cargar estado, restaurando valores por defecto', e);
       aegisState = JSON.parse(JSON.stringify(DEFAULT_STATE));
@@ -401,6 +528,7 @@ function loadMasterState() {
 function saveMasterState() {
   localStorage.setItem('aegis_master_state', JSON.stringify(aegisState));
   updateHeaderStats();
+  scheduleSupabaseSync();
 }
 
 function initTheme() {
@@ -870,8 +998,8 @@ function saveSleepLog() {
   aegisState.sleep.actualHours = hours;
   aegisState.sleep.quality = quality;
   aegisState.sleep.protocolAccomplished = protocol;
-  aegisState.sleep.nightMedChecked = chkMed.checked;
-  aegisState.sleep.screensOffChecked = chkScreens.checked;
+  aegisState.sleep.nightMedChecked = chkMed ? chkMed.checked : false;
+  aegisState.sleep.screensOffChecked = chkScreens ? chkScreens.checked : false;
 
   const todayStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
   aegisState.sleep.history.unshift({ date: todayStr, hours, quality, protocol });
@@ -998,7 +1126,7 @@ function executeDayRollover(isManual = false) {
     aegisState.medication.takenBlocksToday = {
       '07:00': false,
       '13:00': false,
-      '16:00': false,
+      '15:00': false,
       '20:00': false
     };
     aegisState.medication.takenTimes = {};
@@ -1603,6 +1731,12 @@ function renderRewardsList() {
             ` : `
               <span class="text-xs text-muted">${isClaimed ? '✓ Recompensa cobrada' : 'Penalizado -> Inversión'}</span>
             `}
+            <button class="btn btn-outline btn-sm" onclick="openEditRewardModal('${r.id}')" title="Modificar parámetros del premio">
+              ✏️ Editar
+            </button>
+            <button class="btn btn-outline btn-sm text-danger" onclick="deleteReward('${r.id}')" title="Eliminar premio">
+              🗑️
+            </button>
           </div>
         </div>
 
@@ -1687,6 +1821,58 @@ window.failReward = function(id) {
   }
 };
 
+window.openEditRewardModal = function(id) {
+  const r = aegisState.accounting.rewards.find(item => item.id === id);
+  if (!r) return;
+  document.getElementById('erRewardId').value = r.id;
+  document.getElementById('erName').value = r.name;
+  document.getElementById('erSoberDays').value = r.soberDays || 30;
+  document.getElementById('erWeightTarget').value = r.weightTarget || 74.0;
+  document.getElementById('erMoney').value = r.money || 2500;
+  document.getElementById('erDeadline').value = r.deadline || '';
+  openModal('editRewardModal');
+};
+
+window.saveEditReward = function() {
+  const id = document.getElementById('erRewardId').value;
+  const r = aegisState.accounting.rewards.find(item => item.id === id);
+  if (!r) return;
+
+  const name = document.getElementById('erName').value.trim();
+  const soberDays = parseInt(document.getElementById('erSoberDays').value, 10) || 30;
+  const weightTarget = parseFloat(document.getElementById('erWeightTarget').value) || 74.0;
+  const money = parseFloat(document.getElementById('erMoney').value) || 2500;
+  const deadline = document.getElementById('erDeadline').value || '';
+
+  if (!name) {
+    alert('Ingresa el nombre del premio');
+    return;
+  }
+
+  r.name = name;
+  r.soberDays = soberDays;
+  r.weightTarget = weightTarget;
+  r.money = money;
+  r.deadline = deadline;
+
+  saveMasterState();
+  renderAccountingModule();
+  closeModal('editRewardModal');
+  alert(`Premio "${name}" actualizado con éxito.`);
+};
+
+window.deleteReward = function(id) {
+  const r = aegisState.accounting.rewards.find(item => item.id === id);
+  const rName = r ? r.name : 'este premio';
+  if (confirm(`¿Confirmas eliminar el premio "${rName}"? Esta acción cancela la meta sin penalizar fondos si aún no se había declarado fallido.`)) {
+    aegisState.accounting.rewards = aegisState.accounting.rewards.filter(item => item.id !== id);
+    saveMasterState();
+    renderAccountingModule();
+    closeModal('editRewardModal');
+    alert('Premio eliminado.');
+  }
+};
+
 // =============================================================================
 // 6. MÓDULO 3: NUTRICIÓN, DESPENSA OTZOLOTEPEC & MIFFLIN ST. JEOR
 // =============================================================================
@@ -1702,7 +1888,7 @@ function calculateMifflinStJeor() {
   const prof = aegisState.userProfile;
   const age = calculateAge(prof.birthdate);
   const w = parseFloat(prof.weight) || 74.5;
-  const h = parseFloat(prof.height) || 175;
+  const h = parseFloat(prof.height) || 172;
   const act = parseFloat(prof.activityFactor) || 1.2;
 
   let bmr = (10 * w) + (6.25 * h) - (5 * age);
@@ -1723,6 +1909,18 @@ function calculateMifflinStJeor() {
 }
 
 function renderNutritionModule() {
+  const prof = aegisState.userProfile;
+  const pName = document.getElementById('profileName');
+  const pDob = document.getElementById('profileBirthdate');
+  const pHt = document.getElementById('profileHeight');
+  const pGen = document.getElementById('profileGender');
+  const pAct = document.getElementById('profileActivityFactor');
+  if (pName && prof.name) pName.value = prof.name;
+  if (pDob && prof.birthdate) pDob.value = prof.birthdate;
+  if (pHt && prof.height) pHt.value = prof.height;
+  if (pGen && prof.gender) pGen.value = prof.gender;
+  if (pAct && prof.activityFactor) pAct.value = prof.activityFactor;
+
   const calc = calculateMifflinStJeor();
 
   const ageEl = document.getElementById('calculatedAgeDisplay');
@@ -1976,7 +2174,10 @@ function renderMedicationModule() {
   const container = document.getElementById('medicationBlocksContainer');
   if (!container) return;
 
-  const blocks = ['07:00', '13:00', '16:00', '20:00'];
+  const defaultBlocks = ['07:00', '13:00', '15:00', '20:00'];
+  const customBlocks = med.medsList ? med.medsList.map(m => m.timeBlock).filter(Boolean) : [];
+  const blocks = Array.from(new Set([...defaultBlocks, ...customBlocks])).sort();
+
   container.innerHTML = blocks.map(b => {
     const medsInBlock = med.medsList.filter(m => m.timeBlock === b);
     const taken = med.takenBlocksToday[b] || false;
@@ -2118,9 +2319,10 @@ function calculateAndRenderPharmacokinetics() {
 
   const drugBarsHtml = medList.map(m => {
     let intakeHour = 7.0;
-    if (m.timeBlock === '13:00') intakeHour = 13.0;
-    else if (m.timeBlock === '16:00') intakeHour = 16.0;
-    else if (m.timeBlock === '20:00') intakeHour = 20.0;
+    if (m.timeBlock && m.timeBlock.includes(':')) {
+      const parts = m.timeBlock.split(':');
+      intakeHour = parseInt(parts[0], 10) + (parseInt(parts[1], 10) / 60);
+    }
 
     const blockTimeStr = aegisState.medication.takenTimes && aegisState.medication.takenTimes[m.timeBlock];
     if (blockTimeStr) {
@@ -2760,6 +2962,12 @@ function setupAllEventListeners() {
   if (btnOpenNR) {
     btnOpenNR.addEventListener('click', () => {
       document.getElementById('nrName').value = '';
+      const curSober = (aegisState.abstinence && aegisState.abstinence.days !== undefined) ? aegisState.abstinence.days : (aegisState.sobrietyDays || 1);
+      const curWeight = (aegisState.userProfile && aegisState.userProfile.weight) ? aegisState.userProfile.weight : 74.5;
+      const inpSober = document.getElementById('nrSoberDays');
+      const inpWeight = document.getElementById('nrWeightTarget');
+      if (inpSober) inpSober.value = Math.max(curSober, 30);
+      if (inpWeight) inpWeight.value = curWeight.toFixed(1);
       openModal('newRewardModal');
     });
   }
@@ -2790,6 +2998,21 @@ function setupAllEventListeners() {
       renderAccountingModule();
       closeModal('newRewardModal');
       alert(`Premio "${name}" configurado con interruptor lógico auditado.`);
+    });
+  }
+
+  // Modal Editar Premio
+  const btnCloseER = document.getElementById('btnCloseEditRewardModal');
+  if (btnCloseER) btnCloseER.addEventListener('click', () => closeModal('editRewardModal'));
+  const btnCancelER = document.getElementById('btnCancelEditReward');
+  if (btnCancelER) btnCancelER.addEventListener('click', () => closeModal('editRewardModal'));
+  const btnSaveER = document.getElementById('btnSaveEditReward');
+  if (btnSaveER) btnSaveER.addEventListener('click', saveEditReward);
+  const btnDeleteRM = document.getElementById('btnDeleteRewardModal');
+  if (btnDeleteRM) {
+    btnDeleteRM.addEventListener('click', () => {
+      const rid = document.getElementById('erRewardId').value;
+      deleteReward(rid);
     });
   }
 
@@ -3059,7 +3282,7 @@ function setupAllEventListeners() {
 
   // Cerrar al hacer clic en el backdrop de cualquiera de los modales
   [
-    'bleHelpModal', 'newProjectModal', 'editProjectModal', 'newRewardModal',
+    'bleHelpModal', 'newProjectModal', 'editProjectModal', 'newRewardModal', 'editRewardModal',
     'newMedModal', 'editMedModal', 'addPantryModal', 'posModal', 'relapseEmergencyModal'
   ].forEach(id => {
     const el = document.getElementById(id);
