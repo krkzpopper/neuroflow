@@ -1732,4 +1732,479 @@ body {
   font-family: var(--font-mono);
 }
 
+/* ==========================================
+   MOBILE RESPONSIVE OVERRIDES (VERTICAL ONLY)
+   Mantiene intacta la vista de escritorio y
+   permite desplazamiento lateral únicamente en
+   la barra de pestañas (.main-tabs-bar)
+   ========================================== */
+@media (max-width: 768px) {
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  /* Evitar que hijos de Grid o Flex expandan los contenedores más allá del ancho móvil */
+  .main-content-layout,
+  .module-tab-pane,
+  .pane-grid-2col,
+  .pane-grid-3col,
+  .pane-grid-2col > *,
+  .pane-grid-3col > *,
+  .card,
+  .sub-panel,
+  .decision-banner,
+  .decision-banner-text {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .main-content-layout {
+    padding: 0 0.75rem 2.5rem;
+  }
+
+  .pane-grid-2col,
+  .pane-grid-3col {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+    overflow-x: hidden;
+  }
+
+  /* 1. Barra de navegación de apartados: ÚNICO elemento con scroll horizontal */
+  .main-tabs-wrapper {
+    padding: 0 0.75rem;
+    margin-bottom: 1rem;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+
+  .main-tabs-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    padding: 0.35rem;
+    gap: 0.35rem;
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    padding: 0.55rem 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  /* 2. Header superior y tira de métricas sin scroll lateral ni superposición */
+  .app-header {
+    position: relative;
+  }
+
+  .header-container {
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .logo-group {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .logo-group h1 {
+    font-size: 1.05rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .logo-group .subtitle {
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+
+  /* Tira de estadísticas superior convertida en cuadrícula vertical 2x2 */
+  .header-stats-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    width: 100%;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+
+  .stat-pill {
+    min-width: 0;
+    width: 100%;
+    padding: 0.45rem 0.65rem;
+    white-space: normal;
+  }
+
+  .stat-pill-value {
+    font-size: 0.82rem;
+    word-break: break-word;
+  }
+
+  .header-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .header-actions .badge {
+    flex: 1 1 auto;
+    justify-content: center;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .header-actions #btnHeaderNewDay {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  /* 3. Encabezados de tarjetas, insignias y grupos de botones */
+  .card-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .card-title-group {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .card-header h2 {
+    font-size: 1rem;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  .badge {
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  .btn-group {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .btn-group .btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  /* 4. Banners de decisión y alertas */
+  .decision-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.85rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .decision-banner-text p {
+    font-size: 0.82rem;
+    word-break: break-word;
+  }
+
+  /* 5. Formularios y cuadrículas internas a 1 sola columna vertical */
+  .form-grid,
+  .buckets-grid,
+  .comparator-grid,
+  .pantry-grid,
+  .seven-projects-grid,
+  .branches-matrix,
+  .pos-layout-grid,
+  .craving-sliders-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .macro-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem;
+  }
+
+  /* Barra de ingreso de capital (Contabilidad) */
+  .income-deposit-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.9rem;
+    gap: 0.75rem;
+  }
+
+  .income-deposit-bar > .form-group,
+  .income-deposit-bar > .btn {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    align-self: stretch !important;
+  }
+
+  .bucket-card {
+    padding: 0.9rem;
+  }
+
+  .bucket-balance {
+    font-size: 1.25rem;
+    word-break: break-word;
+  }
+
+  /* Tarjetas de premios e inversiones */
+  .reward-item-card > div:first-child,
+  .project-clickable-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+  }
+
+  .reward-criteria-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.4rem;
+  }
+
+  /* 6. Sueño y Cronobiología */
+  .chrono-item {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .chrono-time {
+    min-width: auto;
+  }
+
+  .chrono-info {
+    flex: 1 1 calc(100% - 75px);
+    min-width: 0;
+  }
+
+  .chrono-check-label {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 0.35rem;
+    border-top: 1px dashed var(--border-color);
+  }
+
+  .sleep-result-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  /* 7. Nutrición, Báscula, TDEE y Comidas */
+  .scale-weight-hero {
+    padding: 1rem;
+  }
+
+  .weight-number {
+    font-size: 2.4rem;
+  }
+
+  .tdee-summary-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.9rem;
+  }
+
+  .tdee-Right {
+    text-align: left;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .meal-slot-header {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .sunday-item-row {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  /* 8. Medicación y Farmacocinética */
+  .med-block-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .med-block-header .btn {
+    width: 100%;
+  }
+
+  .med-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .pk-header-row {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .pk-Legend {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* 9. Ejercicio y Temporizador */
+  .exercise-timer-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .timer-display {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+
+  .exercise-timer-bar .btn-group {
+    justify-content: center;
+  }
+
+  .exercise-step-item {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* 10. Trabajo, Pomodoro, POS y Telemetría Emocional */
+  .pomodoro-clock-circle {
+    width: 150px;
+    height: 150px;
+  }
+
+  .pomodoro-time-big {
+    font-size: 2rem;
+  }
+
+  .craving-input-card {
+    padding: 0.9rem;
+  }
+
+  .craving-history-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .comp-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  /* 11. Tablas convertidas a Tarjetas Verticales Apiladas (Cero scroll horizontal) */
+  .table-responsive {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .ledger-table,
+  .ledger-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .ledger-table thead {
+    display: none;
+  }
+
+  .ledger-table tbody tr {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .ledger-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .ledger-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed var(--border-color);
+    text-align: right;
+    font-size: 0.8rem;
+    word-break: break-word;
+  }
+
+  .ledger-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .ledger-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  /* Filas de estado vacío (colspan) */
+  .ledger-table td[colspan] {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .ledger-table td[colspan]::before {
+    display: none;
+  }
+
+  /* 12. Modales adaptados a móvil */
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-card {
+    padding: 1.15rem;
+    max-height: 92vh;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-stats-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions .badge,
+  .header-actions #btnHeaderNewDay {
+    flex: 1 1 100%;
+  }
+}
+
+
 

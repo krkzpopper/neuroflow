@@ -1030,15 +1030,15 @@ function renderDailyRecordsHistory() {
 
     return `
       <tr>
-        <td><strong>📅 ${r.date}</strong></td>
-        <td><span class="status-badge success">Día ${r.sobrietyDay}</span></td>
-        <td>${(r.weight || 74.5).toFixed(1)} kg</td>
-        <td><strong>${(r.sleepHours || 9.0).toFixed(1)} h</strong></td>
-        <td>${protoBadge}</td>
-        <td>${mealsDone}/7 comidas</td>
-        <td>${medsDone}/4 bloques</td>
-        <td><span class="badge-pill">${pomos}/8 pomodoros</span></td>
-        <td><small class="text-muted">${r.notes || 'Auditoría completada'}</small></td>
+        <td data-label="Fecha"><strong>📅 ${r.date}</strong></td>
+        <td data-label="Abstinencia"><span class="status-badge success">Día ${r.sobrietyDay}</span></td>
+        <td data-label="Peso">${(r.weight || 74.5).toFixed(1)} kg</td>
+        <td data-label="Sueño"><strong>${(r.sleepHours || 9.0).toFixed(1)} h</strong></td>
+        <td data-label="Protocolo">${protoBadge}</td>
+        <td data-label="Comidas">${mealsDone}/7 comidas</td>
+        <td data-label="Medicación">${medsDone}/4 bloques</td>
+        <td data-label="Pomodoro"><span class="badge-pill">${pomos}/8 pomodoros</span></td>
+        <td data-label="Notas"><small class="text-muted">${r.notes || 'Auditoría completada'}</small></td>
       </tr>
     `;
   }).join('');
@@ -1531,12 +1531,12 @@ function renderGeneralLedger() {
 
       return `
         <tr>
-          <td><strong>${dateFormatted}</strong></td>
-          <td><span class="${isInc ? 'badge-income' : 'badge-expense'}">${isInc ? '+ Ingreso' : '- Egreso'}</span></td>
-          <td><span class="badge-pill">${tx.category}</span></td>
-          <td>${tx.description || '-'}</td>
-          <td><small class="text-muted">${tx.bucket || '-'}</small></td>
-          <td class="text-right font-bold ${isInc ? 'text-success' : 'text-danger'}">
+          <td data-label="Fecha / Hora"><strong>${dateFormatted}</strong></td>
+          <td data-label="Tipo"><span class="${isInc ? 'badge-income' : 'badge-expense'}">${isInc ? '+ Ingreso' : '- Egreso'}</span></td>
+          <td data-label="Categoría"><span class="badge-pill">${tx.category}</span></td>
+          <td data-label="Concepto">${tx.description || '-'}</td>
+          <td data-label="Cubeta"><small class="text-muted">${tx.bucket || '-'}</small></td>
+          <td data-label="Monto" class="text-right font-bold ${isInc ? 'text-success' : 'text-danger'}">
             ${isInc ? '+' : '-'}$${tx.amount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </td>
         </tr>
